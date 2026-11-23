@@ -155,6 +155,8 @@
   <aside class="sidebar">
     <div class="brand"><div class="logo">IQ</div><div><b>ImmuniQ</b><span>Santé · Togo</span></div></div>
     <nav class="nav">
+      <div class="section">Référentiels</div>
+      <a data-s="scr-referentiels" onclick="go('scr-referentiels')"><span class="ico">▦</span>Calendriers &amp; règles</a>
       <div class="section">Pilotage</div>
       <a class="active" data-s="scr-dashboard" onclick="go('scr-dashboard')"><span class="ico">◈</span>Tableau de bord</a>
       <a data-s="scr-beneficiaires" onclick="go('scr-beneficiaires')"><span class="ico">☻</span>Bénéficiaires</a>
@@ -163,6 +165,9 @@
       <div class="section">Logistique</div>
       <a data-s="scr-stocks" onclick="go('scr-stocks')"><span class="ico">▤</span>Stocks &amp; lots</a>
       <a data-s="scr-froid" onclick="go('scr-froid')"><span class="ico">❄</span>Chaîne du froid</a>
+      <div class="section">Analyse</div>
+      <a data-s="scr-rapports" onclick="go('scr-rapports')"><span class="ico">◫</span>Rapports &amp; exports</a>
+      <a data-s="scr-notifications" onclick="go('scr-notifications')"><span class="ico">✉</span>Notifications</a>
       <div class="section">Système</div>
       <a data-s="scr-utilisateurs" onclick="go('scr-utilisateurs')"><span class="ico">⚙</span>Utilisateurs &amp; rôles</a>
       <a data-s="scr-audit" onclick="go('scr-audit')"><span class="ico">≡</span>Journal d'audit</a>
@@ -421,6 +426,144 @@
         </table>
       </div>
 
+      <!-- REFERENTIELS -->
+      <div class="screen" id="scr-referentiels">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div><h1 class="page-title">Référentiels vaccinaux</h1><p class="page-sub">Calendriers versionnés · validation médicale obligatoire avant publication</p></div>
+          <button class="btn btn-primary">+ Nouvelle version</button>
+        </div>
+        <div class="card" style="margin-bottom:16px;padding:14px">
+          <h3>Calendrier national de routine — v2026.3</h3>
+          <table>
+            <thead><tr><th>Âge</th><th>Vaccin</th><th>Dose</th><th>Contexte</th><th>Statut</th></tr></thead>
+            <tbody>
+              <tr><td>Naissance</td><td>BCG</td><td>1</td><td>Routine</td><td><span class="pill pill-green">Publié</span></td></tr>
+              <tr><td>6 semaines</td><td>Penta (DTC-HepB-Hib)</td><td>1</td><td>Routine</td><td><span class="pill pill-green">Publié</span></td></tr>
+              <tr><td>10 semaines</td><td>Penta</td><td>2</td><td>Routine</td><td><span class="pill pill-green">Publié</span></td></tr>
+              <tr><td>14 semaines</td><td>Penta + VPI</td><td>3</td><td>Routine</td><td><span class="pill pill-green">Publié</span></td></tr>
+              <tr><td>9 mois</td><td>Rougeole-RR</td><td>1</td><td>Routine + campagne</td><td><span class="pill pill-green">Publié</span></td></tr>
+              <tr><td>15 mois</td><td>Rougeole-RR</td><td>2</td><td>Routine</td><td><span class="pill pill-green">Publié</span></td></tr>
+              <tr><td>9–14 ans</td><td>VPH</td><td>1–2</td><td>Campagne / rattrapage</td><td><span class="pill pill-green">Publié</span></td></tr>
+            </tbody>
+          </table>
+          <p style="font-size:11px;color:var(--muted);margin-top:10px">Source : Programme national élargi de vaccination (PnEV) · validé par Dr. E. Dossou le 01/09/2026 · date d'effet 01/10/2026</p>
+        </div>
+        <div class="grid g2">
+          <div class="card">
+            <h3>Versions en cours de validation</h3>
+            <table>
+              <thead><tr><th>Référentiel</th><th>Version</th><th>Statut</th><th>Action</th></tr></thead>
+              <tbody>
+                <tr><td>Calendrier routine</td><td>v2027.1</td><td><span class="pill pill-orange">Soumis</span></td><td><button class="btn btn-navy btn-sm">Examiner</button></td></tr>
+                <tr><td>Règles campagne fièvre jaune</td><td>v1.2</td><td><span class="pill pill-blue">Brouillon</span></td><td><button class="btn btn-ghost btn-sm">Modifier</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card">
+            <h3>Cycle de vie</h3>
+            <div style="font-size:12px;line-height:2.2">
+              <span class="pill pill-grey">Brouillon</span> → <span class="pill pill-orange">Soumis</span> → <span class="pill pill-blue">Approuvé</span> → <span class="pill pill-green">Publié</span> → <span class="pill pill-grey">Retiré</span><br><br>
+              <span style="color:var(--muted);font-size:11px">Aucune règle médicale n'est modifiable sans validation d'une autorité compétente. Les versions publiées ne sont jamais écrasées — les actes historiques conservent la version utilisée.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- INCIDENT FROID DETAILLE -->
+      <div class="screen" id="scr-incident">
+        <h1 class="page-title">Incident chaîne du froid — Frigo F-014</h1>
+        <p class="page-sub">Ouvert le 23/11/2026 09:14 · CS Adidogomé · responsable : A. Mensah</p>
+        <div class="split">
+          <div class="card">
+            <h3>Chronologie</h3>
+            <div class="timeline">
+              <div class="t-item"><div class="t-date">09:14</div><div class="t-label">Alerte automatique</div><div class="t-detail">Relevé +11,2 °C (seuil max +8 °C)</div></div>
+              <div class="t-item"><div class="t-date">09:20</div><div class="t-label">Notification responsable</div><div class="t-detail">SMS + push à A. Mensah</div></div>
+              <div class="t-item"><div class="t-date">09:45</div><div class="t-label">Mesures conservatoires</div><div class="t-detail">Transfert des lots vers chambre froide B</div></div>
+              <div class="t-item"><div class="t-date">10:30</div><div class="t-label">Réparation engagée</div><div class="t-detail">Technicien notifié — thermostat</div></div>
+              <div class="t-item"><div class="t-date">11:14</div><div class="t-label">Relevé en cours</div><div class="t-detail">+9,8 °C — retour progressif vers la plage</div></div>
+              <div class="t-item"><div class="t-date">—</div><div class="t-label">Évaluation autorité</div><div class="t-detail">En attente — décision sur réutilisation des lots</div></div>
+            </div>
+          </div>
+          <div>
+            <div class="card" style="margin-bottom:16px">
+              <h3>Lots potentiellement concernés</h3>
+              <table>
+                <thead><tr><th>Lot</th><th>Produit</th><th>Qté</th><th>Décision</th></tr></thead>
+                <tbody>
+                  <tr><td>PCV-2026-A17</td><td>Penta</td><td>320</td><td><span class="pill pill-orange">Quarantaine</span></td></tr>
+                  <tr><td>MR-2026-B04</td><td>Rougeole-RR</td><td>180</td><td><span class="pill pill-orange">Quarantaine</span></td></tr>
+                </tbody>
+              </table>
+              <p style="font-size:11px;color:var(--muted);margin-top:8px">ImmuniQ ne décide pas de la réutilisation — décision de l'autorité compétente requise.</p>
+            </div>
+            <div class="card">
+              <h3>Décision de l'autorité</h3>
+              <textarea placeholder="Motif et décision (réutilisation / destruction)…" style="width:100%;height:70px;border:1px solid var(--border);border-radius:8px;padding:8px;font-family:inherit;font-size:12px"></textarea>
+              <button class="btn btn-navy" style="margin-top:8px;width:100%;justify-content:center">Enregistrer la décision</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RAPPORTS / EXPORTS -->
+      <div class="screen" id="scr-rapports">
+        <h1 class="page-title">Rapports &amp; exports</h1>
+        <p class="page-sub">Indicateurs agrégés ou anonymisés · tout export est tracé (auteur, périmètre, finalité)</p>
+        <div class="grid g3" style="margin-bottom:16px">
+          <div class="card"><h3>Couverture vaccinale</h3><div class="big">87,4 %</div><div class="delta" style="color:var(--muted)">Penta 3 — District Tsévié</div></div>
+          <div class="card"><h3>Taux d'abandon</h3><div class="big">4,2 %</div><div class="delta down">▼ 0,8 pt vs trimestre</div></div>
+          <div class="card"><h3>Délai moyen rappel</h3><div class="big">6,3 j</div><div class="delta" style="color:var(--muted)">objectif &lt; 7 j</div></div>
+        </div>
+        <table>
+          <thead><tr><th>Rapport</th><th>Type</th><th>Période</th><th>Format</th><th>Dernier export</th><th>Par</th><th></th></tr></thead>
+          <tbody>
+            <tr><td>Activité vaccinale par structure</td><td>Indicateur</td><td>Nov 2026</td><td>PDF / XLSX</td><td>22/11 14:02</td><td>Dr. E. Dossou</td><td><button class="btn btn-ghost btn-sm">Exporter</button></td></tr>
+            <tr><td>Bilan campagne rougeole</td><td>Campagne</td><td>Jan–Nov 2026</td><td>PDF</td><td>—</td><td>—</td><td><button class="btn btn-ghost btn-sm">Générer</button></td></tr>
+            <tr><td>État des stocks &amp; péremptions</td><td>Logistique</td><td>Semaine 47</td><td>XLSX</td><td>23/11 08:15</td><td>A. Mensah</td><td><button class="btn btn-ghost btn-sm">Exporter</button></td></tr>
+            <tr><td>Incidents chaîne du froid</td><td>Logistique</td><td>Nov 2026</td><td>PDF</td><td>23/11 11:20</td><td>Dr. E. Dossou</td><td><button class="btn btn-ghost btn-sm">Exporter</button></td></tr>
+          </tbody>
+        </table>
+        <div class="card" style="margin-top:16px">
+          <h3>Filtres disponibles</h3>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--muted)">
+            <span class="pill pill-blue">Période</span><span class="pill pill-blue">Région</span><span class="pill pill-blue">District</span><span class="pill pill-blue">Structure</span><span class="pill pill-blue">Campagne</span><span class="pill pill-blue">Tranche d'âge</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- NOTIFICATIONS -->
+      <div class="screen" id="scr-notifications">
+        <h1 class="page-title">Notifications &amp; rappels</h1>
+        <p class="page-sub">Rappels vaccinaux · alertes professionnelles · préférences et consentements</p>
+        <div class="grid g2">
+          <div class="card">
+            <h3>Envois récents</h3>
+            <table>
+              <thead><tr><th>Type</th><th>Canal</th><th>Destinataires</th><th>Statut</th><th>Date</th></tr></thead>
+              <tbody>
+                <tr><td>Rappel VAA 2</td><td>SMS</td><td>214</td><td><span class="pill pill-green">Délivrés 96 %</span></td><td>23/11 10:31</td></tr>
+                <tr><td>Alerte froid</td><td>Push + SMS</td><td>3 responsables</td><td><span class="pill pill-green">Accusés</span></td><td>23/11 09:15</td></tr>
+                <tr><td>Rappel Penta 3</td><td>Portail</td><td>89</td><td><span class="pill pill-blue">En attente lecture</span></td><td>23/11 08:00</td></tr>
+                <tr><td>Relance stock faible</td><td>Email</td><td>2 gestionnaires</td><td><span class="pill pill-orange">1 échec</span></td><td>22/11 17:00</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card">
+            <h3>Préférences types</h3>
+            <table>
+              <thead><tr><th>Message</th><th>Canal principal</th><th>Secours</th><th>Fréquence max</th></tr></thead>
+              <tbody>
+                <tr><td>Rappel vaccinal</td><td>SMS</td><td>Appel</td><td>1/semaine</td></tr>
+                <tr><td>Alerte professionnelle</td><td>Push</td><td>SMS</td><td>Immédiat</td></tr>
+                <tr><td>Information campagne</td><td>Portail</td><td>SMS</td><td>2/mois</td></tr>
+              </tbody>
+            </table>
+            <p style="font-size:11px;color:var(--muted);margin-top:10px">Les messages ne contiennent jamais de données de santé — uniquement des rappels génériques. Les messages essentiels de santé publique restent envoyés même si les préférences facultatives sont désactivées.</p>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -500,11 +643,15 @@
   <select onchange="go(this.value)">
     <option value="scr-login">Connexion</option>
     <option value="scr-dashboard" selected>Web — Tableau de bord</option>
+    <option value="scr-referentiels">Web — Référentiels</option>
     <option value="scr-beneficiaires">Web — Bénéficiaires</option>
     <option value="scr-vaccination">Web — Dossier vaccinal</option>
     <option value="scr-campagnes">Web — Campagnes</option>
     <option value="scr-stocks">Web — Stocks</option>
     <option value="scr-froid">Web — Chaîne du froid</option>
+    <option value="scr-incident">Web — Incident détail</option>
+    <option value="scr-rapports">Web — Rapports</option>
+    <option value="scr-notifications">Web — Notifications</option>
     <option value="scr-utilisateurs">Web — Utilisateurs</option>
     <option value="scr-audit">Web — Audit</option>
     <option value="scr-mobile">Mobile — Vaccinateur</option>
