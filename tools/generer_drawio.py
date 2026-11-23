@@ -3,7 +3,7 @@
 import html
 import os
 
-OUT = os.path.dirname(os.path.abspath(__file__))
+OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "docs", "diagrammes")
 
 BLUE = "#dae8fc"; BLUE_B = "#6c8ebf"
 GREEN = "#d5e8d4"; GREEN_B = "#82b366"

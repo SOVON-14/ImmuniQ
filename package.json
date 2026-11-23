@@ -1,0 +1,20 @@
+{
+  "name": "immuniq",
+  "version": "0.1.0",
+  "private": true,
+  "description": "ImmuniQ - systeme national de gestion et de suivi de la vaccination (Togo)",
+  "packageManager": "pnpm@9.15.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev:web": "pnpm --filter @immuniq/web dev",
+    "dev:mobile": "pnpm --filter @immuniq/mobile start",
+    "dev:portail": "pnpm --filter @immuniq/portail dev",
+    "dev:api": "pnpm --filter @immuniq/api start:dev",
+    "build": "pnpm -r build",
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck"
+  }
+}
