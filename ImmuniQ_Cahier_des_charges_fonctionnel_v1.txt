@@ -1,0 +1,642 @@
+IMMUNIQ
+CAHIER DES CHARGES FONCTIONNEL
+Spécifications des modules, fonctionnalités et règles métier
+Version de travail 1.0  |  20 novembre 2026
+Projet de système national de gestion et de suivi de la vaccination au Togo
+Fiche de contrôle du document
+Convention de lecture
+Les décisions M01-F01 à M01-F07 ont été explicitement choisies par le porteur du projet au cours des échanges.
+À la demande du porteur du projet, les décisions restantes du cahier des charges sont rédigées comme des arbitrages adoptés par lui, afin de constituer une base cohérente et complète. Elles ne doivent pas être confondues avec une validation médicale, réglementaire ou institutionnelle.
+Les exigences cliniques (calendriers, doses, intervalles, contre-indications et conduite à tenir) doivent être confirmées par les autorités sanitaires ou experts compétents avant toute mise en production.
+Le présent document décrit les comportements attendus du système. Il ne fixe pas encore l'architecture technique ni le choix des technologies.
+1. Présentation générale
+1.1 Contexte
+ImmuniQ est un système numérique destiné à organiser et améliorer la gestion de la vaccination au Togo. Il couvre le suivi vaccinal des bénéficiaires, les activités des professionnels de santé, les campagnes de vaccination, la logistique des vaccins, les stocks, la traçabilité des lots et la surveillance de la chaîne du froid.
+1.2 Objectifs fonctionnels
+Constituer un dossier vaccinal individuel, continu et sécurisé pour chaque bénéficiaire.
+Enregistrer de façon fiable les doses réellement administrées et les événements associés.
+Aider les professionnels à consulter les échéances vaccinales à partir de référentiels validés.
+Organiser les structures, les équipes, les campagnes et les missions mobiles.
+Assurer la traçabilité des stocks, des lots, des mouvements et des incidents de chaîne du froid.
+Informer les bénéficiaires et les professionnels au moyen de rappels et d'alertes multicanales.
+Fournir aux responsables des indicateurs opérationnels et sanitaires adaptés à leurs responsabilités.
+Permettre la continuité des activités dans les zones à connectivité limitée grâce au mode hors ligne.
+1.3 Périmètre couvert
+Population : nouveau-nés, nourrissons, enfants, adolescents, adultes et personnes âgées.
+Territoire : Togo.
+Structures : établissements publics, établissements privés et équipes mobiles.
+Activités : vaccination de routine, campagnes, rattrapage, rappels et vaccinations spécifiques.
+Interfaces : application web, application mobile et portail bénéficiaire.
+Dossier : exclusivement vaccinal, avec les informations médicales strictement nécessaires à la vaccination.
+1.4 Éléments hors périmètre
+Dossier médical général couvrant les consultations et traitements sans lien avec la vaccination.
+Enregistrement des interventions préventives non vaccinales comme s'il s'agissait de vaccins.
+Diagnostic ou décision médicale autonome par le logiciel.
+Définition non validée par l'équipe technique des calendriers, doses, intervalles ou contre-indications.
+2. Profils d'utilisateurs et principes d'accès
+3. Spécifications fonctionnelles par module
+M01 — Gestion des utilisateurs, des comptes et des habilitations
+Objectif : Créer, administrer et sécuriser les comptes, rôles, permissions, rattachements et sessions des utilisateurs.
+Acteurs concernés : Administrateurs, autorités territoriales, responsables de structures, professionnels, gestionnaires, agents de campagne, bénéficiaires et représentants.
+M01-F01 — Création mixte et contrôlée des comptes
+Finalité : Permettre la création des comptes professionnels à plusieurs niveaux organisationnels.
+Les administrateurs nationaux, autorités territoriales et responsables de structures peuvent créer des comptes dans les limites de leur périmètre.
+Certaines créations sont soumises à validation avant activation.
+Chaque compte professionnel est nominatif et rattaché à une identité utilisateur.
+Le système conserve le créateur, la date, le valideur éventuel et l'historique de création.
+M01-F02 — Authentification hybride
+Finalité : Sécuriser l'accès par identifiant et mot de passe, avec une vérification supplémentaire pour les comptes sensibles.
+Tous les utilisateurs disposent d'un identifiant personnel et d'un secret d'authentification.
+Une authentification multifacteur est exigée pour les comptes à privilèges élevés et les profils définis comme sensibles.
+Les mécanismes de second facteur peuvent inclure un code à usage unique ou une application d'authentification.
+Les procédures tiennent compte des contraintes de connectivité sans supprimer les exigences de sécurité.
+M01-F03 — Profil complet et évolutif
+Finalité : Centraliser les informations personnelles, professionnelles et administratives du compte.
+Gérer les coordonnées et informations personnelles nécessaires.
+Gérer fonction, qualification, spécialité le cas échéant et informations professionnelles.
+Gérer structures, équipes et rattachements.
+Afficher statut, date de création et historique des modifications.
+Séparer les profils professionnels des dossiers vaccinaux des bénéficiaires.
+M01-F04 — Gestion hybride des rôles et permissions
+Finalité : Associer des rôles prédéfinis à des permissions configurables et à un périmètre organisationnel.
+Fournir des rôles standards correspondant aux responsabilités.
+Autoriser la configuration contrôlée des permissions.
+Limiter les droits selon le niveau territorial, la structure et les affectations.
+Séparer lecture, création, modification, validation, export et administration.
+Journaliser toute attribution ou modification de privilège.
+M01-F05 — Rattachements multiples et missions temporaires
+Finalité : Gérer les rattachements permanents et les affectations temporaires.
+Autoriser plusieurs rattachements permanents et désigner un rattachement principal.
+Créer des affectations temporaires pour les campagnes et missions mobiles.
+Définir dates de début et de fin, lieu, équipe et responsabilités.
+Désactiver les droits liés à une affectation à son échéance.
+Conserver l'historique des rattachements et affectations.
+M01-F06 — Récupération mixte et sécurisée
+Finalité : Permettre la récupération autonome ou assistée d'un compte selon son niveau de sensibilité.
+Autoriser une récupération autonome après vérification d'un moyen de contact préalablement validé.
+Exiger une vérification renforcée pour les comptes sensibles.
+Permettre l'intervention d'un administrateur habilité selon une procédure tracée.
+Révoquer les moyens d'authentification compromis et journaliser l'opération.
+M01-F07 — Gestion complète des statuts
+Finalité : Contrôler le cycle de vie d'un compte.
+Gérer les statuts en attente, actif, suspendu, bloqué et désactivé.
+Permettre une suspension manuelle ou déclenchée par une règle autorisée.
+Encadrer la réactivation par une habilitation appropriée.
+Ne jamais supprimer les actes historiques ni les traces attribuées à un compte désactivé.
+M01-F08 — Gestion complète des sessions et appareils
+Finalité : Contrôler les sessions actives et les appareils utilisés.
+Afficher les sessions actives avec informations utiles : appareil, date, activité récente et localisation approximative si disponible et licite.
+Appliquer une expiration après inactivité et une durée maximale de session.
+Permettre la révocation à distance d'une session ou d'un appareil.
+Détecter et signaler les comportements de connexion inhabituels.
+Renforcer les contrôles pour les sessions administratives.
+Prévoir une procédure en cas de perte ou de vol d'un appareil mobile.
+M01-F09 — Journal d'audit des activités
+Finalité : Conserver une piste fiable des actions sensibles.
+Journaliser les connexions, échecs répétés, créations, modifications, validations, suspensions, changements de droits et exports.
+Enregistrer l'auteur, l'horodatage, l'objet concerné, l'action et le résultat.
+Protéger les journaux contre les modifications non autorisées.
+Permettre une consultation filtrée aux profils autorisés.
+Définir une politique de conservation et d'archivage conforme aux règles applicables.
+M01-F10 — Contrôle des autorisations
+Finalité : Appliquer les permissions à chaque opération et à chaque ressource.
+Vérifier les droits côté serveur à chaque action protégée.
+Combiner rôle, permission, rattachement, affectation et contexte de l'action.
+Appliquer le principe du moindre privilège et le refus par défaut.
+Gérer les délégations temporaires avec date d'expiration.
+Empêcher l'auto-attribution de privilèges et tracer les changements d'habilitation.
+Règles métier
+Chaque personne possède un compte individuel ; les comptes partagés sont interdits pour les professionnels.
+Un utilisateur ne peut administrer que les comptes et ressources de son périmètre.
+Les droits temporaires expirent automatiquement à la fin de l'affectation.
+La désactivation d'un compte ne supprime jamais l'historique métier produit par cet utilisateur.
+Critères d'acceptation principaux
+Un responsable de structure ne peut pas créer un compte hors de son périmètre.
+Un compte sensible ne peut pas accéder aux fonctions protégées sans second facteur.
+Une session révoquée ne peut plus effectuer d'opération.
+Une opération sensible peut être retrouvée dans le journal d'audit.
+M02 — Gestion des bénéficiaires et des représentants légaux
+Objectif : Créer et maintenir l'identité ImmuniQ des personnes suivies et gérer les liens avec leurs représentants.
+Acteurs concernés : Bénéficiaires, parents/représentants, agents habilités et professionnels de santé.
+M02-F01 — Création du bénéficiaire
+Finalité : Créer un dossier bénéficiaire sans exiger systématiquement une pièce officielle.
+Générer automatiquement un identifiant interne ImmuniQ permanent.
+Collecter uniquement les informations nécessaires à l'identification et au suivi vaccinal.
+Permettre la création assistée par un professionnel et les parcours autorisés du portail.
+Enregistrer la source et l'auteur de la création.
+M02-F02 — Recherche et prévention des doublons
+Finalité : Retrouver un bénéficiaire avant de créer un nouveau dossier.
+Rechercher à partir de l'identifiant ImmuniQ et des attributs autorisés.
+Signaler les correspondances potentielles sans fusion automatique.
+Soumettre les rapprochements à un agent habilité.
+Conserver les références et l'historique en cas de fusion contrôlée.
+M02-F03 — Mise à jour des informations
+Finalité : Maintenir les informations d'identification à jour.
+Autoriser la correction des coordonnées et informations autorisées.
+Tracer les anciennes et nouvelles valeurs pour les champs sensibles.
+Prévoir la correction d'erreurs d'identité avec contrôle approprié.
+M02-F04 — Gestion des représentants
+Finalité : Associer plusieurs parents ou représentants à un bénéficiaire.
+Enregistrer le type de lien, la base de l'autorité, les dates de validité et les justificatifs éventuels selon les règles applicables.
+Définir des droits distincts par représentant.
+Permettre l'ajout, la modification, la révocation et l'expiration d'un lien.
+Tracer les décisions et changements d'autorité.
+M02-F05 — Changement de structure
+Finalité : Assurer la continuité du dossier lors d'un changement de centre.
+Conserver l'identifiant ImmuniQ.
+Permettre le transfert ou l'accès autorisé au dossier selon les règles nationales.
+Conserver l'historique des structures ayant pris en charge le bénéficiaire.
+M02-F06 — Statut du bénéficiaire
+Finalité : Gérer les situations administratives du dossier.
+Distinguer dossier actif, à vérifier, fusionné, archivé ou signalé selon les règles retenues.
+Ne pas effacer un historique vaccinal en raison d'un changement de statut.
+Règles métier
+L'identifiant ImmuniQ est permanent et ne doit pas être réattribué.
+Les représentants accèdent uniquement aux dossiers pour lesquels leur autorité est enregistrée et valide.
+Une fusion de doublons est une opération contrôlée, réversible selon procédure et entièrement auditée.
+Les données collectées sont limitées à la finalité vaccinale.
+M03 — Dossier vaccinal du bénéficiaire
+Objectif : Présenter une vue structurée et chronologique des vaccinations prévues et réalisées.
+Acteurs concernés : Bénéficiaires, représentants autorisés et professionnels habilités.
+M03-F01 — Consultation du dossier
+Finalité : Afficher le résumé vaccinal d'un bénéficiaire.
+Afficher identité ImmuniQ et informations nécessaires à la prise en charge.
+Présenter les vaccinations réalisées, prévues, en retard et reportées.
+Afficher les informations médicales nécessaires à la sécurité vaccinale, avec accès restreint.
+M03-F02 — Historique vaccinal
+Finalité : Conserver les actes passés et leur contexte.
+Afficher vaccin, dose, date, lieu, professionnel et lot lorsqu'il est connu.
+Distinguer les actes saisis dans ImmuniQ des historiques importés ou déclarés.
+Identifier le niveau de vérification de chaque information.
+M03-F03 — Échéancier individuel
+Finalité : Présenter les prochaines échéances selon le référentiel applicable.
+Calculer les échéances à partir des règles validées et des données disponibles.
+Expliquer la source et la version du référentiel appliqué.
+Signaler les informations manquantes qui empêchent un calcul fiable.
+M03-F04 — Documents associés
+Finalité : Conserver les documents autorisés utiles au suivi vaccinal.
+Associer des justificatifs ou documents pertinents au dossier.
+Contrôler les formats et la taille des fichiers.
+Appliquer les droits d'accès et les règles de conservation.
+M03-F05 — Attestation ou carnet numérique
+Finalité : Permettre la consultation et la production d'un relevé vaccinal.
+Générer une vue imprimable ou téléchargeable des actes vérifiés.
+Afficher la date de génération et les informations de vérification.
+Protéger le document contre les modifications non autorisées.
+Règles métier
+Le dossier reste exclusivement vaccinal.
+Une dose planifiée, recommandée ou rappelée ne constitue pas une dose administrée.
+Les informations importées ou déclaratives doivent être identifiables comme telles.
+M04 — Référentiels et calendrier vaccinaux
+Objectif : Administrer les référentiels qui déterminent les vaccinations, âges, doses, intervalles et échéances applicables.
+Acteurs concernés : Administrateurs autorisés, responsables médicaux et professionnels selon leurs droits.
+M04-F01 — Catalogue des vaccins
+Finalité : Gérer le référentiel des vaccins et présentations.
+Enregistrer désignation, description, présentation et informations de référence validées.
+Gérer les statuts actif, suspendu et archivé.
+M04-F02 — Calendriers vaccinaux
+Finalité : Gérer les calendriers selon population et contexte.
+Définir les règles par tranche d'âge, dose, intervalle et situation.
+Distinguer routine, campagne, rattrapage et vaccination spécifique.
+Associer une source officielle et une date d'effet.
+M04-F03 — Versionnement
+Finalité : Conserver l'historique des référentiels.
+Créer une nouvelle version sans écraser les versions précédentes.
+Définir date d'entrée en vigueur, auteur et approbateur.
+Conserver la version utilisée pour calculer chaque échéance.
+M04-F04 — Validation et publication
+Finalité : Soumettre les modifications à une validation métier/médicale.
+Prévoir brouillon, soumis, approuvé, publié et retiré.
+Interdire la publication de règles médicales non approuvées.
+Journaliser les décisions de validation.
+M04-F05 — Calcul des échéances et doses
+Finalité : Fournir une aide au calcul selon les règles validées.
+Calculer les échéances et doses attendues à partir des paramètres approuvés.
+Signaler les cas atypiques ou incomplets nécessitant une décision professionnelle.
+Ne pas remplacer le jugement clinique ni les protocoles officiels.
+Règles métier
+Les règles médicales ne sont pas créées ou modifiées sans validation compétente.
+Les changements de référentiel ne réécrivent pas les actes historiques.
+Le système doit afficher la version de règle utilisée lorsqu'une recommandation est présentée.
+M05 — Enregistrement et suivi des actes vaccinaux
+Objectif : Permettre aux professionnels habilités de documenter les doses réellement administrées et les événements associés.
+Acteurs concernés : Professionnels de santé et vaccinateurs habilités.
+M05-F01 — Préparation de la séance
+Finalité : Préparer la prise en charge avant administration.
+Rechercher et confirmer l'identité du bénéficiaire.
+Consulter le dossier et les échéances pertinentes.
+Présenter les informations de sécurité requises selon le protocole validé.
+M05-F02 — Vérifications préalables
+Finalité : Documenter les contrôles requis avant l'acte.
+Présenter les questions et contrôles définis par les autorités compétentes.
+Permettre de signaler une contre-indication suspectée, une précaution ou un besoin d'avis.
+Laisser la décision finale au professionnel habilité.
+M05-F03 — Enregistrement d'une dose
+Finalité : Saisir un acte réellement administré.
+Enregistrer vaccin, dose, date/heure, professionnel, lieu et lot si disponible.
+Enregistrer les données complémentaires requises par le protocole.
+Associer l'acte à une campagne lorsque pertinent.
+M05-F04 — Actes non réalisés
+Finalité : Tracer les actes prévus mais non administrés.
+Gérer report, refus, absence, indisponibilité, contre-indication ou autre motif autorisé.
+Ne jamais comptabiliser ces cas comme des doses administrées.
+Permettre une reprogrammation lorsque pertinente.
+M05-F05 — Correction et validation
+Finalité : Corriger les erreurs de saisie de manière contrôlée.
+Soumettre les corrections sensibles à une autorisation appropriée.
+Conserver valeur initiale, valeur corrigée, auteur, date et motif.
+Empêcher la suppression silencieuse d'un acte validé.
+M05-F06 — Effets indésirables et événements post-vaccinaux
+Finalité : Permettre la déclaration d'événements selon le dispositif officiel applicable.
+Enregistrer les informations nécessaires à la déclaration.
+Orienter vers le circuit de pharmacovigilance ou de surveillance compétent.
+Ne pas poser automatiquement un diagnostic ni conclure à un lien causal.
+Règles métier
+Seul un professionnel habilité peut valider un acte comme administré.
+Les actes doivent être attribuables à un professionnel et à un lieu.
+Les règles de sécurité et de décision clinique sont définies par les autorités compétentes.
+Une correction conserve toujours une trace de l'information initiale.
+M06 — Gestion des structures et équipes mobiles
+Objectif : Référencer les structures, leurs responsables, leurs unités opérationnelles et les équipes mobiles.
+Acteurs concernés : Administrateurs, autorités territoriales et responsables de structures.
+M06-F01 — Référentiel des structures
+Finalité : Créer et maintenir les établissements de santé.
+Enregistrer type, nom, code, adresse, zone administrative, contacts et statut.
+Gérer les structures publiques et privées.
+Conserver les changements d'identité ou de rattachement.
+M06-F02 — Organisation territoriale
+Finalité : Structurer les niveaux national, régional, district et structure.
+Rattacher chaque structure à son niveau territorial.
+Contrôler la cohérence des rattachements.
+Adapter les vues et rapports au périmètre de responsabilité.
+M06-F03 — Gestion des équipes mobiles
+Finalité : Créer et organiser les équipes d'intervention.
+Enregistrer composition, responsable, zone d'intervention et moyens opérationnels.
+Associer les membres et véhicules/équipements si nécessaire.
+Gérer les périodes d'activité et indisponibilités.
+M06-F04 — Planification des activités
+Finalité : Organiser les séances et missions.
+Créer des séances, lieux, horaires, équipes et objectifs.
+Associer les ressources et stocks nécessaires.
+Informer les utilisateurs concernés et suivre l'état de réalisation.
+M06-F05 — Disponibilité et statut
+Finalité : Gérer l'ouverture opérationnelle et les changements de statut.
+Distinguer structure active, temporairement fermée et inactive.
+Tracer les changements et leurs dates d'effet.
+Règles métier
+Une structure possède un rattachement territorial cohérent.
+Les utilisateurs ne voient que les structures de leur périmètre ou de leur affectation.
+Les équipes mobiles disposent d'affectations et de zones d'intervention datées.
+M07 — Gestion des campagnes de vaccination
+Objectif : Planifier, organiser, exécuter et évaluer les campagnes de vaccination.
+Acteurs concernés : Autorités sanitaires, responsables de campagne, structures et équipes mobiles.
+M07-F01 — Création de campagne
+Finalité : Définir le cadre d'une campagne.
+Enregistrer objectifs, population cible, vaccins, période, zones et responsables.
+Associer les consignes et référentiels validés.
+Définir des indicateurs de suivi.
+M07-F02 — Planification opérationnelle
+Finalité : Organiser sites, équipes, séances et ressources.
+Affecter les équipes et responsables.
+Planifier dates, horaires et lieux.
+Estimer les besoins en doses et consommables selon les paramètres approuvés.
+M07-F03 — Exécution
+Finalité : Suivre les activités réalisées sur le terrain.
+Enregistrer les séances et actes liés à la campagne.
+Suivre présence des équipes et disponibilité des stocks.
+Permettre la saisie hors ligne pour les équipes mobiles.
+M07-F04 — Suivi en temps réel ou différé
+Finalité : Consolider l'avancement.
+Comparer réalisations et objectifs.
+Signaler retards, ruptures et écarts.
+Afficher la fraîcheur des données lorsque la synchronisation est différée.
+M07-F05 — Clôture et évaluation
+Finalité : Produire le bilan de campagne.
+Consolider doses administrées, personnes atteintes et ressources consommées.
+Documenter difficultés et enseignements.
+Valider la clôture par un responsable habilité.
+Règles métier
+Une campagne possède un responsable, une période et un périmètre.
+Les actes de campagne restent également inscrits dans le dossier vaccinal individuel.
+Les indicateurs doivent distinguer données synchronisées et données en attente.
+M08 — Gestion des stocks, vaccins et consommables
+Objectif : Assurer le suivi des quantités disponibles et des mouvements de vaccins et consommables.
+Acteurs concernés : Gestionnaires de stock, responsables de structures, autorités et équipes mobiles autorisées.
+M08-F01 — Réception des produits
+Finalité : Enregistrer les approvisionnements.
+Saisir produit, quantité, lot, date de péremption, fournisseur/source et date de réception.
+Documenter les écarts ou anomalies à la réception.
+M08-F02 — Mouvements de stock
+Finalité : Tracer les entrées, sorties, transferts et ajustements.
+Associer chaque mouvement à une origine, destination, date et responsable.
+Gérer les transferts entre dépôts, structures et équipes.
+Exiger un motif pour les ajustements.
+M08-F03 — Inventaire
+Finalité : Comparer stock théorique et stock physique.
+Effectuer des inventaires périodiques.
+Enregistrer écarts et validation.
+Conserver l'historique des corrections.
+M08-F04 — Péremption et pertes
+Finalité : Surveiller les dates et les produits non utilisables.
+Signaler les produits proches de la péremption.
+Tracer pertes, casses, destructions et retours selon procédure.
+Éviter la mise à disposition d'un lot déclaré inutilisable.
+M08-F05 — Alertes de stock
+Finalité : Détecter les seuils et anomalies.
+Configurer des seuils par produit et site.
+Alerter en cas de rupture, stock faible ou écart inhabituel.
+Permettre le suivi de traitement de l'alerte.
+M08-F06 — Rapprochement avec les actes
+Finalité : Aider à rapprocher les doses administrées et les sorties de stock.
+Associer les consommations à l'activité vaccinale lorsque le processus le permet.
+Signaler les écarts sans correction automatique non contrôlée.
+Règles métier
+Tout mouvement doit être traçable et attribuable.
+Le stock est suivi par produit et par lot lorsque l'information est disponible.
+Les corrections d'inventaire nécessitent un motif et une habilitation.
+M09 — Surveillance de la chaîne du froid
+Objectif : Enregistrer les températures et gérer les incidents susceptibles d'affecter la qualité des vaccins.
+Acteurs concernés : Gestionnaires, responsables de structures, équipes mobiles et autorités compétentes.
+M09-F01 — Référentiel des équipements
+Finalité : Répertorier les équipements de conservation.
+Enregistrer type, identifiant, site, responsable et statut.
+Associer les équipements aux lots stockés lorsque possible.
+M09-F02 — Enregistrement des températures
+Finalité : Conserver les relevés de température.
+Saisir ou recevoir les mesures selon les moyens disponibles.
+Associer date, heure, équipement, valeur et auteur/source.
+Prévoir la traçabilité des relevés manuels et automatiques.
+M09-F03 — Détection des excursions
+Finalité : Signaler les mesures hors des seuils validés.
+Configurer les seuils selon les consignes officielles applicables.
+Déclencher une alerte et identifier les produits potentiellement concernés.
+Conserver la durée et l'évolution de l'incident.
+M09-F04 — Gestion des incidents
+Finalité : Suivre le traitement d'une anomalie.
+Ouvrir un incident, désigner un responsable et enregistrer les mesures conservatoires.
+Documenter l'évaluation et la décision de l'autorité compétente.
+Clôturer avec justification et pièces utiles.
+Règles métier
+Les seuils doivent provenir des procédures officielles applicables.
+ImmuniQ ne décide pas automatiquement de la réutilisation d'un lot après excursion.
+Les incidents et décisions sont intégralement historisés.
+M10 — Notifications, rappels et alertes
+Objectif : Informer les bénéficiaires et les professionnels au bon moment, par les canaux autorisés.
+Acteurs concernés : Bénéficiaires, représentants, professionnels et responsables.
+M10-F01 — Rappels vaccinaux
+Finalité : Envoyer les rappels liés aux échéances et rendez-vous.
+Calculer les rappels à partir des référentiels validés.
+Permettre la configuration des délais et fréquences par campagne ou règle.
+Éviter les messages contradictoires après enregistrement d'un acte.
+M10-F02 — Canaux multicanaux
+Finalité : Diffuser les notifications selon les coordonnées et préférences disponibles.
+Prendre en charge SMS, notifications push et portail bénéficiaire.
+Enregistrer l'état d'envoi et, lorsque disponible, de livraison.
+Prévoir un canal de secours selon les règles de notification.
+M10-F03 — Alertes professionnelles
+Finalité : Informer les équipes des événements nécessitant une attention.
+Signaler retards, rendez-vous, anomalies de stock et incidents de chaîne du froid.
+Adapter le destinataire au rôle et au périmètre.
+Permettre l'accusé de prise en compte et le suivi.
+M10-F04 — Préférences et consentements de communication
+Finalité : Gérer les préférences compatibles avec les obligations de santé publique.
+Enregistrer les coordonnées vérifiées et préférences de canal.
+Permettre la mise à jour des préférences.
+Distinguer messages de service essentiels et communications facultatives selon le cadre légal.
+M10-F05 — Suivi des notifications
+Finalité : Contrôler les envois et échecs.
+Consulter historique, statut, canal et motif d'échec.
+Permettre une relance contrôlée.
+Éviter la divulgation de données de santé dans le contenu des messages.
+Règles métier
+Une notification ne constitue jamais une autorisation médicale d'administrer un vaccin.
+Les messages doivent révéler le minimum d'informations sensibles.
+Les rappels doivent être recalculés lorsque le dossier vaccinal ou le référentiel change.
+M11 — Tableaux de bord, statistiques et rapports
+Objectif : Fournir des indicateurs utiles au pilotage opérationnel et sanitaire, selon les droits de chaque utilisateur.
+Acteurs concernés : Administrateurs, autorités sanitaires, responsables de structures et responsables de campagne.
+M11-F01 — Tableau de bord national et territorial
+Finalité : Afficher les indicateurs agrégés selon le périmètre.
+Présenter volumes d'actes, couverture selon les définitions validées, retards et activités.
+Filtrer par période, région, district, structure, campagne et catégorie d'âge.
+Afficher date de dernière actualisation.
+M11-F02 — Suivi des structures
+Finalité : Comparer l'activité des structures autorisées.
+Présenter activité, objectifs, retards et disponibilité des ressources.
+Permettre une lecture détaillée selon les permissions.
+M11-F03 — Rapports de campagne
+Finalité : Produire les bilans d'avancement et de clôture.
+Comparer objectifs et réalisations.
+Présenter les écarts et données manquantes.
+Exporter les rapports dans les formats autorisés.
+M11-F04 — Rapports logistiques
+Finalité : Suivre les stocks et incidents.
+Présenter stocks disponibles, ruptures, péremptions, pertes et mouvements.
+Afficher alertes de chaîne du froid et état de traitement.
+M11-F05 — Export et partage
+Finalité : Produire des extractions contrôlées.
+Limiter les champs exportables selon les droits.
+Tracer auteur, date, périmètre et finalité de l'export.
+Privilégier les données agrégées ou anonymisées lorsque l'identification n'est pas nécessaire.
+Règles métier
+Chaque indicateur possède une définition et une méthode de calcul documentées.
+Les données individuelles ne sont accessibles qu'aux profils autorisés.
+Les chiffres issus de synchronisations différées doivent être signalés comme provisoires si nécessaire.
+M12 — Fonctionnement hors ligne et synchronisation
+Objectif : Permettre aux équipes autorisées de poursuivre les activités en cas d'absence de connexion, puis de synchroniser les données.
+Acteurs concernés : Professionnels, équipes mobiles et utilisateurs autorisés sur appareils mobiles.
+M12-F01 — Préparation hors ligne
+Finalité : Charger les données nécessaires avant une mission.
+Télécharger uniquement les données autorisées et utiles à la mission.
+Définir une durée de validité des données locales.
+Protéger les données stockées sur l'appareil.
+M12-F02 — Consultation hors ligne
+Finalité : Consulter les données déjà synchronisées.
+Permettre la consultation des dossiers autorisés et des référentiels nécessaires.
+Afficher la date de dernière synchronisation.
+Ne pas exposer les données au-delà du périmètre attribué.
+M12-F03 — Saisie hors ligne
+Finalité : Enregistrer localement les activités autorisées.
+Créer des actes, observations opérationnelles et mouvements prévus pour le mode hors ligne selon les habilitations.
+Attribuer un identifiant local unique à chaque opération.
+Marquer les éléments en attente de synchronisation.
+M12-F04 — Synchronisation automatique et manuelle
+Finalité : Transmettre les opérations lorsque la connexion revient.
+Déclencher la synchronisation automatiquement ou à la demande.
+Afficher progression, succès, échec et éléments en attente.
+Reprendre après interruption sans créer de doublons.
+M12-F05 — Gestion des conflits
+Finalité : Traiter les modifications concurrentes.
+Détecter les conflits et doublons potentiels.
+Appliquer des règles de résolution selon le type de donnée.
+Soumettre les conflits sensibles à un utilisateur habilité.
+Conserver la provenance et l'historique des versions.
+M12-F06 — Sécurité locale
+Finalité : Protéger les données sur les appareils.
+Chiffrer les données locales selon les capacités techniques retenues.
+Prévoir verrouillage, expiration et révocation d'accès.
+Effacer les données locales selon une procédure contrôlée lors de la perte ou du retrait d'un appareil.
+Règles métier
+Le mode hors ligne ne donne jamais plus de droits que le mode connecté.
+Une opération locale n'est considérée comme synchronisée qu'après confirmation du serveur.
+Les conflits ne doivent pas entraîner la perte silencieuse d'un acte vaccinal.
+Les appareils partagés doivent permettre une séparation des sessions et des utilisateurs.
+M13 — Administration générale, paramétrage et supervision
+Objectif : Administrer les paramètres transversaux, surveiller le fonctionnement métier et gérer les référentiels non cliniques.
+Acteurs concernés : Administrateurs nationaux et profils délégués.
+M13-F01 — Paramètres généraux
+Finalité : Gérer les paramètres de fonctionnement autorisés.
+Gérer nomenclatures, listes, modèles de notification et paramètres non cliniques.
+Tracer chaque modification et sa date d'effet.
+M13-F02 — Gestion des référentiels administratifs
+Finalité : Maintenir les régions, districts, structures, fonctions et catégories.
+Créer, modifier, désactiver et historiser les valeurs.
+Éviter la suppression des éléments déjà utilisés dans l'historique.
+M13-F03 — Supervision fonctionnelle
+Finalité : Surveiller les anomalies et éléments en attente.
+Consulter erreurs de synchronisation, alertes non traitées, demandes en attente et incidents déclarés.
+Affecter un responsable et suivre la résolution.
+M13-F04 — Sauvegarde et restauration — suivi opérationnel
+Finalité : Suivre les opérations de sauvegarde et les incidents de restauration.
+Consulter l'état des sauvegardes et les résultats des tests de restauration.
+Restreindre les opérations techniques sensibles aux personnes autorisées.
+Documenter les incidents et les actions correctives.
+M13-F05 — Paramètres de conservation et archivage
+Finalité : Appliquer les politiques approuvées.
+Paramétrer les règles de conservation après validation juridique et institutionnelle.
+Archiver sans altérer les traces nécessaires.
+Tracer les opérations d'archivage et de restitution.
+Règles métier
+Les paramètres médicaux sont administrés dans le circuit de validation spécifique du module M04.
+Les opérations d'administration sont réservées aux profils explicitement habilités.
+Les actions de supervision ne doivent pas donner automatiquement accès au contenu nominatif des dossiers.
+4. Parcours utilisateurs principaux
+4.1 Création et activation d'un compte professionnel
+Un responsable habilité ouvre le formulaire de création de compte.
+Il saisit les informations personnelles et professionnelles nécessaires.
+Il attribue un rôle, des permissions autorisées et un rattachement organisationnel.
+Le système vérifie que le créateur possède le droit d'effectuer cette opération dans son périmètre.
+Si une validation est requise, la demande est transmise au valideur compétent.
+Après validation, le compte est activé ou reste en attente si des informations manquent.
+Le nouvel utilisateur reçoit les instructions d'accès par un canal sécurisé.
+Les opérations sont inscrites dans le journal d'audit.
+4.2 Prise en charge et vaccination d'un bénéficiaire
+Le professionnel s'authentifie et vérifie son affectation et ses droits.
+Il recherche le bénéficiaire à partir de son identifiant ou des critères autorisés.
+Il vérifie l'identité et consulte le dossier vaccinal.
+Il consulte les recommandations calculées à partir du référentiel publié.
+Il réalise les vérifications préalables prévues par le protocole médical.
+Il prend la décision clinique relevant de sa compétence.
+Si la dose est administrée, il enregistre l'acte, le lot et le contexte.
+Le dossier et l'échéancier sont mis à jour ; les notifications pertinentes sont préparées.
+Si l'appareil est hors ligne, l'opération est conservée localement et marquée en attente de synchronisation.
+4.3 Gestion d'une mission mobile
+Un responsable crée la mission et définit sa période, sa zone et ses objectifs.
+Il affecte les membres de l'équipe et les droits temporaires nécessaires.
+Les données et référentiels autorisés sont préparés pour le mode hors ligne.
+L'équipe réalise les activités et enregistre les actes et mouvements.
+À la reconnexion, les données sont synchronisées et les conflits éventuels sont traités.
+À la fin de la mission, les affectations et droits temporaires expirent.
+4.4 Gestion d'un incident de chaîne du froid
+Une mesure hors seuil est détectée ou saisie.
+Le système ouvre une alerte et identifie les équipements et lots potentiellement concernés.
+Un responsable est notifié et prend les mesures conservatoires prévues.
+L'évaluation est confiée à l'autorité compétente.
+La décision, les justificatifs et les actions correctives sont enregistrés.
+L'incident est clôturé après validation et reste consultable dans l'historique.
+5. Exigences transversales
+Sécurité et confidentialité
+Appliquer le moindre privilège, le refus par défaut et la séparation des responsabilités.
+Chiffrer les échanges réseau et protéger les données sensibles stockées.
+Journaliser les accès et opérations sensibles.
+Prévoir gestion des sessions, authentification renforcée et révocation des appareils.
+Qualité et intégrité des données
+Valider les champs, formats, dates, références et cohérences métier.
+Prévenir les doublons sans fusion automatique non contrôlée.
+Conserver l'historique des corrections et des opérations.
+Identifier la provenance et le statut de vérification des données.
+Disponibilité et résilience
+Prévoir sauvegardes régulières et tests de restauration.
+Prévoir reprise après interruption et synchronisation idempotente.
+Afficher clairement les données locales non synchronisées.
+Définir des objectifs de disponibilité et de reprise lors de la conception technique.
+Ergonomie et accessibilité
+Adapter les interfaces aux rôles et appareils.
+Favoriser des parcours simples pour les professionnels sur le terrain.
+Limiter les saisies répétitives et permettre la recherche rapide.
+Prévoir une interface lisible sur mobile et dans des conditions d'utilisation variables.
+Traçabilité et auditabilité
+Associer les opérations métier à un auteur, un horodatage et un contexte.
+Conserver les décisions de validation et les changements de droits.
+Permettre des investigations sans altérer les journaux.
+6. Données principales à prévoir
+La liste ci-dessous est une première cartographie métier. Elle ne constitue pas encore le modèle de données définitif.
+Utilisateur, profil, identifiant de connexion, rôle, permission, session et appareil.
+Structure sanitaire, unité territoriale, équipe mobile, rattachement et affectation.
+Bénéficiaire, identifiant ImmuniQ, représentant légal et lien de représentation.
+Dossier vaccinal, acte vaccinal, dose, vaccin, lot et événement post-vaccinal.
+Référentiel vaccinal, calendrier, règle, version, source et validation.
+Campagne, séance, site, équipe, objectif et résultat.
+Produit, stock, dépôt, mouvement, inventaire, perte et péremption.
+Équipement de froid, relevé de température, alerte et incident.
+Notification, canal, destinataire, statut d'envoi et préférence.
+Journal d'audit, rapport, export, synchronisation et conflit.
+7. Priorisation fonctionnelle proposée
+8. Hypothèses, dépendances et validations externes
+Les calendriers vaccinaux, doses, intervalles, contre-indications et protocoles seront fournis ou validés par les autorités sanitaires compétentes.
+Les obligations légales relatives aux données personnelles et de santé, au consentement, à la représentation des mineurs, à la conservation et aux échanges devront faire l'objet d'une validation juridique au Togo.
+Les rôles institutionnels, niveaux territoriaux et processus de validation devront être confirmés avec les parties prenantes.
+Les canaux SMS et push dépendent de fournisseurs et d'une couverture réseau à préciser.
+Les intégrations avec des systèmes nationaux ou partenaires seront définies après identification des systèmes autorisés et des interfaces disponibles.
+Les exigences de performance, disponibilité, capacité, temps de réponse et reprise après sinistre seront chiffrées lors du dossier technique.
+9. Critères globaux de recette fonctionnelle
+Un utilisateur ne peut effectuer que les opérations autorisées par son rôle, son périmètre et son affectation.
+Un bénéficiaire conserve son identifiant et son historique lors d'un changement de structure.
+Un acte non administré ne peut pas être comptabilisé comme une dose réalisée.
+Chaque acte validé est attribuable à un professionnel et à un contexte.
+Les règles vaccinales affichées correspondent à une version publiée et validée.
+Les mouvements de stock et incidents de chaîne du froid sont historisés.
+Les équipes peuvent saisir hors ligne et synchroniser sans perte ni duplication silencieuse.
+Les notifications sont traçables et ne divulguent pas inutilement des données de santé.
+Les rapports respectent le périmètre d'accès et les règles de confidentialité.
+Les opérations sensibles sont consultables dans le journal d'audit.
+10. Prochaines étapes
+Relecture du cahier des charges par les responsables métier et les professionnels de santé.
+Validation institutionnelle des processus et des référentiels médicaux.
+Élaboration des diagrammes UML : cas d'utilisation, activités, séquences et classes.
+Élaboration de la matrice détaillée des rôles et permissions.
+Conception du modèle conceptuel et logique de données.
+Définition de l'architecture fonctionnelle et technique, notamment du mode hors ligne.
+Maquettage UX/UI des interfaces web, mobile et portail bénéficiaire.
+Planification des lots de réalisation et préparation de la stratégie de tests.
+11. Historique des décisions et portée
+Les choix explicitement confirmés pendant les échanges pour le module M01 sont :
+M01-F01 : création mixte et contrôlée des comptes.
+M01-F02 : authentification hybride.
+M01-F03 : profil complet et évolutif.
+M01-F04 : gestion hybride des rôles et permissions.
+M01-F05 : rattachements multiples et missions temporaires.
+M01-F06 : récupération mixte et sécurisée.
+M01-F07 : gestion complète des statuts.
+Conformément à la demande du porteur du projet, les autres exigences et arbitrages de ce cahier des charges sont formulés comme les décisions de référence retenues pour le projet, y compris M01-F08 à M01-F10. Ils sont intégrés à la version de travail pour éviter de bloquer la rédaction sur des validations répétitives. Les validations médicales, réglementaires et institutionnelles restent toutefois du ressort des autorités et experts compétents.
+Toute évolution ultérieure devra être consignée dans une nouvelle version, avec l'identifiant de l'exigence concernée, la modification, sa justification, sa date et son responsable.
+Projet | ImmuniQ (IMQ)
+Nature | Cahier des charges fonctionnel
+Version | 1.0 — document de travail
+Date | 20 novembre 2026
+Périmètre | Togo — structures publiques, privées et équipes mobiles
+État | Base fonctionnelle consolidée, à faire relire par les parties prenantes métier, sanitaires et juridiques
+Profil | Responsabilités principales | Périmètre d'accès
+Administrateur national | Paramétrage national, comptes, référentiels administratifs, supervision | Périmètre national selon habilitations
+Autorité sanitaire territoriale | Supervision, comptes et rapports du territoire | Région ou district attribué
+Responsable de structure | Organisation locale, personnel et activités de la structure | Structure(s) rattachée(s)
+Professionnel / vaccinateur | Consultation autorisée et enregistrement des actes | Bénéficiaires pris en charge et lieux d'exercice autorisés
+Gestionnaire de stock | Réception, mouvements, inventaire, lots et alertes | Dépôts et structures autorisés
+Agent de campagne | Opérations et suivi de campagne | Campagne et affectation attribuées
+Bénéficiaire | Consultation de son dossier vaccinal et échéances | Son propre dossier
+Parent / représentant légal | Accès autorisé au dossier du bénéficiaire représenté | Dossier(s) pour lesquels l'autorité est établie
+Priorité | Modules / capacités | Résultat attendu
+P1 — Socle indispensable | M01, M02, M03, M04, M05 et fonctions essentielles de M12 | Comptes sécurisés, bénéficiaires, dossier vaccinal et enregistrement fiable des actes.
+P2 — Opérations terrain | M06, M07 et M10 | Structures, équipes, campagnes, rappels et alertes.
+P3 — Logistique et pilotage | M08, M09 et M11 | Stocks, lots, chaîne du froid et rapports.
+P4 — Consolidation | M13, interopérabilité et améliorations avancées | Administration renforcée, intégrations et optimisation.

@@ -1,0 +1,21 @@
+# Environnement
+.env
+.env.*
+!.env.example
+
+# Dépendances / builds
+node_modules/
+dist/
+build/
+__pycache__/
+*.pyc
+.venv/
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

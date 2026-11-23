@@ -1,0 +1,35 @@
+/* ImmuniQ — Design tokens (extraits du logo officiel) */
+:root {
+  /* Couleurs de marque */
+  --immuniq-navy: #083860;
+  --immuniq-navy-2: #084068;
+  --immuniq-navy-light: #0E4A7A;
+  --immuniq-teal: #00A8A8;
+  --immuniq-teal-dark: #00A0A0;
+  --immuniq-teal-light: #33BDBD;
+  --immuniq-mist: #E8F0F0;
+  --immuniq-mist-light: #F0F7F7;
+
+  /* Neutres */
+  --color-bg: #F0F7F7;
+  --color-surface: #FFFFFF;
+  --color-text: #1A202C;
+  --color-text-muted: #4A5568;
+  --color-border: #E2E8F0;
+
+  /* Sémantique */
+  --color-success: #2F855A;
+  --color-warning: #B7791F;
+  --color-danger: #C53030;
+  --color-info: var(--immuniq-teal);
+
+  /* Typo */
+  --font-heading: 'Gotham', 'Segoe UI', system-ui, sans-serif;
+  --font-body: 'Poppins', 'Gotham', 'Segoe UI', system-ui, sans-serif;
+
+  /* Rayons / ombres (à ajuster selon maquette) */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --shadow-card: 0 1px 3px rgba(8, 56, 96, 0.08);
+}

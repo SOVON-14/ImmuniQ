@@ -1,0 +1,232 @@
+IMMUNIQ
+Document de cadrage du projet
+Décisions fonctionnelles, organisationnelles et principes de conception
+Version 1.0  |  20 novembre 2026
+Statut du projet : pré-cadrage — développement non commencé
+1. Objet du document
+Ce document consolide les décisions déjà exprimées et validées au cours des échanges sur ImmuniQ, puis complète les points encore ouverts par des choix de cadrage cohérents avec le périmètre retenu. Il constitue une base de référence pour la rédaction du cahier des charges, la modélisation des données, la conception des interfaces, l’architecture, les tests et la préparation du déploiement.
+ImmuniQ est un système numérique de gestion et de suivi de la vaccination au Togo. Il doit accompagner les bénéficiaires et les acteurs de santé, soutenir les structures fixes et les équipes mobiles, et améliorer la traçabilité des vaccinations, des stocks et des campagnes.
+1.1 Lecture des statuts
+Validée : décision explicitement confirmée par l’utilisateur dans les échanges.
+Retenue pour le cadrage : arbitrage proposé et intégré par cohérence afin de disposer d’une base complète. Il pourra être amendé lors de la revue formelle.
+1.2 État d’avancement
+Le projet est au stade de pré-cadrage. Le développement n’a pas commencé. Le présent document ne prétend donc pas décrire une application déjà réalisée.
+2. Vision et objectifs
+Centraliser et sécuriser les informations relatives aux vaccinations des bénéficiaires.
+Assurer la continuité du suivi vaccinal tout au long de la vie.
+Faciliter le travail des professionnels de santé et des équipes mobiles.
+Améliorer la planification, l’exécution et l’évaluation des campagnes de vaccination.
+Renforcer la gestion des stocks, la traçabilité des lots et le suivi de la chaîne du froid.
+Informer les bénéficiaires et les professionnels grâce à des rappels et alertes adaptés.
+Produire des indicateurs fiables pour le pilotage des activités vaccinales.
+3. Décisions de cadrage
+IMQ-001 — Population cible
+Statut : Validée
+Décision retenue : Toutes les catégories d’âge : nouveau-nés et nourrissons, enfants, adolescents, adultes et personnes âgées.
+Justification : Le système doit suivre les parcours vaccinaux sur l’ensemble de la vie.
+IMQ-002 — Périmètre géographique
+Statut : Validée
+Décision retenue : Le périmètre initial d’ImmuniQ est limité au territoire du Togo.
+Justification : Cela permet d’aligner les référentiels, les règles métier et le déploiement sur le contexte national.
+IMQ-003 — Structures concernées
+Statut : Validée
+Décision retenue : Les structures publiques, les structures privées et les équipes mobiles de vaccination sont couvertes.
+Justification : Le système doit prendre en charge les activités en établissement comme les interventions sur le terrain.
+IMQ-004 — Catégories d’utilisateurs
+Statut : Validée
+Décision retenue : Quatre grandes catégories : professionnels de santé, autorités sanitaires, bénéficiaires et parents/représentants légaux.
+Justification : Les droits seront différenciés selon le rôle, la responsabilité et le contexte d’intervention.
+Un utilisateur ne voit que les informations nécessaires à sa mission.
+Les accès aux dossiers bénéficiaires sont soumis à des règles strictes de confidentialité.
+IMQ-005 — Périmètre vaccinal
+Statut : Validée
+Décision retenue : ImmuniQ couvre la vaccination de routine, les campagnes, les vaccinations complémentaires (rattrapage et rappels) et les vaccinations spécifiques (professionnelles, médicales ou liées aux voyages).
+Justification : Les interventions préventives qui ne sont pas des vaccinations restent hors du dossier vaccinal et ne doivent pas être assimilées à des vaccins.
+Les règles vaccinales et calendriers devront provenir de référentiels officiels en vigueur et être validés par les autorités ou experts médicaux compétents.
+Aucun calendrier, dosage ou intervalle médical ne sera inventé par l’équipe de développement.
+IMQ-006 — Logistique vaccinale
+Statut : Validée
+Décision retenue : Gestion complète du suivi vaccinal, des stocks, de la traçabilité des lots et doses, et de la surveillance de la chaîne du froid.
+Justification : La gestion logistique est essentielle à la sécurité et à la fiabilité des opérations.
+Tracer les mouvements de stock et les lots.
+Associer, lorsque disponible, le lot administré à l’acte vaccinal.
+Enregistrer les alertes et incidents de température.
+IMQ-007 — Gestion des campagnes
+Statut : Validée
+Décision retenue : Gestion complète des campagnes : planification, organisation, exécution, suivi et évaluation.
+Justification : Les campagnes doivent être pilotées comme des opérations structurées, avec objectifs, équipes, sites et résultats.
+IMQ-008 — Mode de fonctionnement
+Statut : Validée
+Décision retenue : Mode hybride : fonctionnement connecté et fonctionnement hors ligne avec synchronisation ultérieure.
+Justification : La connectivité peut être limitée sur certains sites ou pendant les missions mobiles.
+En mode hors ligne, permettre la saisie locale et la consultation des données déjà synchronisées et autorisées.
+À la reconnexion, synchroniser les données et traiter les conflits et doublons.
+Protéger les données stockées temporairement sur les appareils.
+IMQ-009 — Canaux et interfaces
+Statut : Validée
+Décision retenue : Trois interfaces complémentaires : application web, application mobile et portail bénéficiaire.
+Justification : Chaque interface répond à des usages distincts.
+Web : administration, autorités sanitaires, responsables de structures, supervision et statistiques.
+Mobile : professionnels, vaccinateurs et équipes mobiles, avec mode hors ligne.
+Portail bénéficiaire : consultation du dossier vaccinal, de l’historique et des prochaines échéances.
+IMQ-010 — Notifications et rappels
+Statut : Validée
+Décision retenue : Système complet de notifications : rappels, notifications multicanales, suivi des retards et alertes destinées aux professionnels.
+Justification : Les notifications améliorent la continuité du suivi sans se substituer à une décision clinique.
+Canaux prévus : SMS, notifications push mobiles et portail.
+Rappels de rendez-vous et d’échéances vaccinales.
+Alertes professionnelles : retards, rendez-vous, anomalies de stock et incidents de chaîne du froid.
+Une notification ne constitue jamais une autorisation médicale d’administrer un vaccin.
+IMQ-011 — Identification du bénéficiaire
+Statut : Validée
+Décision retenue : Chaque bénéficiaire reçoit un identifiant interne ImmuniQ, généré automatiquement et conservé dans le temps.
+Justification : L’identifiant interne permet le suivi même en cas de changement de structure.
+La création d’un dossier ne dépend pas obligatoirement de la présentation d’une pièce officielle.
+Les documents officiels peuvent être associés en complément, selon les règles applicables.
+Le système doit prévenir les doublons et prévoir une procédure contrôlée de rapprochement.
+Le format exact de l’identifiant sera défini dans la conception technique ; le préfixe IMQ peut être retenu comme convention.
+IMQ-012 — Nature du dossier bénéficiaire
+Statut : Validée
+Décision retenue : Dossier exclusivement vaccinal, contenant uniquement les informations médicales nécessaires à la vaccination.
+Justification : Le projet ne constitue pas un dossier médical général. La collecte est limitée au besoin vaccinal.
+IMQ-013 — Parents et représentants légaux
+Statut : Retenue pour le cadrage
+Décision retenue : Gestion multiple des parents ou représentants légaux, avec des droits d’accès et autorisations différenciés.
+Justification : Cette approche couvre les situations de garde partagée, de délégation et de changement de représentant.
+Associer un ou plusieurs représentants à un bénéficiaire mineur ou dépendant.
+Tracer qui a créé ou modifié une association et sur quelle base.
+Prévoir la révocation ou la mise à jour des droits lorsque la situation change.
+L’accès du représentant ne doit pas supprimer l’identité propre du bénéficiaire.
+IMQ-014 — Gestion des comptes et authentification
+Statut : Retenue pour le cadrage
+Décision retenue : Comptes individuels nominatifs pour les utilisateurs professionnels et administratifs ; accès bénéficiaire via un compte personnel ou un mécanisme sécurisé de rattachement.
+Justification : Les comptes partagés rendent les actions difficiles à attribuer et fragilisent la confidentialité.
+Authentification renforcée pour les profils sensibles et administratifs.
+Réinitialisation sécurisée des accès et révocation des sessions/appareils perdus.
+Le mécanisme exact de connexion bénéficiaire (téléphone, courriel, code à usage unique ou combinaison) sera spécifié en conception.
+IMQ-015 — Organisation territoriale et rattachement
+Statut : Retenue pour le cadrage
+Décision retenue : Organisation hiérarchique configurable : niveau national, régional, district sanitaire, structure de santé et équipe mobile.
+Justification : Cette structure permet de répartir les responsabilités, les accès, les stocks et les rapports.
+Un utilisateur professionnel est rattaché à une ou plusieurs structures ou équipes selon sa fonction.
+Les autorités disposent d’une visibilité agrégée correspondant à leur niveau de responsabilité.
+Les rattachements doivent pouvoir évoluer sans perdre l’historique.
+IMQ-016 — Rôles et habilitations
+Statut : Retenue pour le cadrage
+Décision retenue : Contrôle d’accès fondé sur les rôles et le périmètre organisationnel (RBAC + portée), avec séparation des responsabilités.
+Justification : Un simple rôle global ne suffit pas : les droits doivent aussi dépendre de la structure et du territoire.
+Prévoir au minimum : administrateur national, autorité sanitaire, responsable de structure, gestionnaire de stock, vaccinateur/professionnel, agent de campagne et bénéficiaire/représentant.
+Les droits de lecture, création, modification, validation, export et administration sont séparés.
+Les privilèges administratifs sont limités et toutes les actions sensibles sont journalisées.
+IMQ-017 — Enregistrement d’un acte vaccinal
+Statut : Retenue pour le cadrage
+Décision retenue : Un acte vaccinal est enregistré par un professionnel habilité, après vérification du bénéficiaire et des éléments de sécurité requis.
+Justification : La traçabilité doit distinguer une dose planifiée d’une dose réellement administrée.
+Enregistrer au minimum : bénéficiaire, vaccin, dose, date/heure, professionnel, structure ou lieu, lot si disponible et statut de l’acte.
+Gérer les actes administrés, reportés, annulés ou non réalisés avec un motif.
+Les contrôles cliniques et règles d’éligibilité doivent être définis et validés par les responsables médicaux.
+Les corrections d’un acte déjà validé doivent être tracées, sans effacement silencieux de l’historique.
+IMQ-018 — Référentiels vaccinaux et règles médicales
+Statut : Retenue pour le cadrage
+Décision retenue : Référentiels centralisés, versionnés et administrables, dont le contenu médical est validé par une autorité compétente avant mise en production.
+Justification : Les calendriers, âges, doses, intervalles et contre-indications peuvent évoluer.
+Conserver la source, la date d’effet, la version et l’autorité de validation de chaque référentiel.
+Distinguer les règles nationales de routine des campagnes et recommandations spécifiques.
+Ne pas appliquer rétroactivement une nouvelle règle aux actes historiques sans règle explicite.
+La détermination de la dose selon l’âge doit s’appuyer sur les règles médicales validées.
+IMQ-019 — Gestion des stocks et lots
+Statut : Retenue pour le cadrage
+Décision retenue : Suivi des entrées, sorties, transferts, ajustements, pertes, péremptions et niveaux de stock, avec traçabilité par lot.
+Justification : La disponibilité réelle et la qualité des vaccins doivent être suivies au niveau opérationnel.
+Associer les mouvements à une structure, un dépôt ou une équipe.
+Suivre dates de péremption et seuils d’alerte.
+Rapprocher les doses administrées des sorties de stock lorsque le processus le permet.
+Conserver un historique des corrections d’inventaire.
+IMQ-020 — Chaîne du froid
+Statut : Retenue pour le cadrage
+Décision retenue : Suivi des températures et des incidents de chaîne du froid, avec alertes, déclaration, traitement et clôture.
+Justification : Une rupture de chaîne du froid peut affecter la qualité des produits.
+Enregistrer les mesures, dates, lieux, équipements et personnes responsables.
+Documenter les excursions de température et les décisions prises.
+Ne pas décider automatiquement de la réutilisation d’un lot : appliquer la procédure validée par les responsables compétents.
+IMQ-021 — Données, confidentialité et audit
+Statut : Retenue pour le cadrage
+Décision retenue : Protection des données par minimisation, contrôle strict des accès, chiffrement adapté et journalisation des opérations sensibles.
+Justification : Le dossier vaccinal contient des données personnelles et des informations de santé.
+Tracer les consultations et modifications sensibles.
+Limiter les exports et prévoir des droits spécifiques.
+Définir des durées de conservation et règles d’archivage conformément au cadre légal applicable au Togo.
+Prévoir des sauvegardes et une procédure de restauration testée.
+Les statistiques destinées au pilotage doivent être agrégées ou anonymisées lorsque l’identification n’est pas nécessaire.
+IMQ-022 — Rapports et tableaux de bord
+Statut : Retenue pour le cadrage
+Décision retenue : Tableaux de bord adaptés au rôle et au niveau territorial, couvrant l’activité vaccinale, les campagnes, les stocks, les retards et les alertes.
+Justification : Les indicateurs doivent aider à piloter les activités sans exposer inutilement les données individuelles.
+Prévoir des filtres par période, région, district, structure, campagne et catégorie d’âge.
+Définir précisément chaque indicateur et sa méthode de calcul.
+Contrôler les droits d’accès aux données détaillées et aux exports.
+IMQ-023 — Langue et accessibilité
+Statut : Retenue pour le cadrage
+Décision retenue : Le français est la langue initiale de référence des interfaces et documents ; l’architecture doit permettre l’ajout ultérieur d’autres langues.
+Justification : Le français fournit une base cohérente pour le premier déploiement national sans fermer la porte à la localisation.
+IMQ-024 — Interopérabilité
+Statut : Retenue pour le cadrage
+Décision retenue : Prévoir une architecture permettant des échanges sécurisés avec les systèmes de santé autorisés, mais ne pas rendre une intégration externe obligatoire pour la première version.
+Justification : Cela limite les dépendances initiales tout en évitant de bloquer les évolutions futures.
+Documenter les interfaces et formats d’échange.
+Tout échange de données doit être autorisé, sécurisé et limité à sa finalité.
+Les systèmes partenaires et protocoles seront identifiés avec les autorités concernées.
+IMQ-025 — Périmètre de la première version
+Statut : Retenue pour le cadrage
+Décision retenue : Première version centrée sur le dossier vaccinal, l’enregistrement des actes, les utilisateurs et structures, le mode hors ligne, les notifications essentielles, les campagnes et la logistique vaccinale.
+Justification : Le périmètre est ambitieux ; une livraison progressive réduit les risques.
+Priorité 1 : identité, comptes, structures, dossier vaccinal et actes.
+Priorité 2 : synchronisation hors ligne, référentiels et notifications.
+Priorité 3 : campagnes, stocks, lots et chaîne du froid.
+Priorité 4 : tableaux de bord avancés et interopérabilité.
+4. Éléments explicitement hors périmètre ou soumis à validation
+La gestion d’un dossier médical général (consultations, diagnostics et traitements non liés à la vaccination).
+Les interventions préventives non vaccinales, qui ne doivent pas être enregistrées comme des vaccins.
+La définition autonome par l’équipe technique des calendriers, dosages, intervalles ou contre-indications.
+La décision clinique automatisée de vacciner ou de ne pas vacciner.
+L’intégration obligatoire avec un système externe dès la première version.
+La fixation définitive des durées légales de conservation, des textes réglementaires applicables et des mécanismes de consentement : ces points nécessitent une validation juridique et institutionnelle.
+5. Principes fonctionnels transversaux
+Une dose planifiée n’est jamais considérée comme administrée tant qu’un professionnel habilité n’a pas enregistré l’acte.
+Chaque acte vaccinal doit être attribuable à un utilisateur et à un contexte d’administration.
+Les modifications sensibles doivent être historisées et attribuables.
+Les droits d’accès doivent être limités au besoin professionnel et au périmètre organisationnel.
+Le fonctionnement hors ligne ne doit pas contourner les règles d’accès ni exposer les données locales.
+Les règles médicales sont versionnées et validées par des responsables compétents.
+Les alertes et rappels assistent les utilisateurs mais ne remplacent jamais le jugement clinique.
+6. Conséquences pour la conception
+Les décisions ci-dessus impliquent notamment les grands domaines fonctionnels suivants :
+Gestion des identités, comptes, bénéficiaires et représentants légaux.
+Gestion des organisations, structures, équipes et habilitations.
+Dossier vaccinal, calendrier, référentiels et actes d’administration.
+Campagnes de vaccination et suivi opérationnel.
+Stocks, lots, mouvements et chaîne du froid.
+Notifications et rappels multicanaux.
+Synchronisation hors ligne et résolution des conflits.
+Tableaux de bord, rapports, audit et administration.
+Ces domaines constituent une cartographie fonctionnelle initiale. Ils ne préjugent pas encore du nombre de modules techniques, des microservices éventuels, du choix de framework ou de l’infrastructure.
+7. Points à faire valider avec les parties prenantes
+Autorité sanitaire compétente et gouvernance officielle du projet.
+Calendriers vaccinaux, référentiels, règles de dosage et protocoles médicaux en vigueur.
+Cadre légal togolais relatif aux données personnelles et aux données de santé.
+Règles de consentement, représentation légale et accès des mineurs selon les situations.
+Indicateurs nationaux attendus et formats de rapport.
+Systèmes nationaux ou partenaires avec lesquels une interopérabilité serait souhaitée.
+Procédures officielles de gestion des incidents de chaîne du froid et des lots concernés.
+8. Prochaines étapes recommandées
+9. Historique et portée de validation
+Les décisions IMQ-001 à IMQ-012 sont reprises comme décisions explicitement validées dans les échanges. Les décisions IMQ-013 à IMQ-025 sont des arbitrages de cadrage ajoutés pour rendre le document exploitable et cohérent. Elles constituent la proposition de référence de la version 1.0 et devront être ratifiées par les responsables du projet et, pour les sujets médicaux, juridiques ou institutionnels, par les autorités compétentes.
+Toute modification ultérieure devra être reportée dans une nouvelle version du document, avec le numéro de décision concerné, la date, la justification et le statut de validation.
+Étape | Travail à réaliser
+01 | Faire relire et approuver ce cadrage par les parties prenantes métier et sanitaires.
+02 | Rédiger le cahier des charges fonctionnel détaillé et les parcours utilisateurs.
+03 | Définir la matrice des rôles, permissions et périmètres organisationnels.
+04 | Modéliser les données et les référentiels, avec validation des règles médicales.
+05 | Définir l’architecture web/mobile, la synchronisation hors ligne et la sécurité.
+06 | Construire le plan de tests fonctionnels, médicaux, sécurité et résilience.
+07 | Préparer un déploiement pilote dans un périmètre contrôlé avant généralisation.
