@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { IdentityModule } from './modules/identity/identity.module';
+import { OrgModule } from './modules/org/org.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { IdentityModule } from './modules/identity/identity.module';
       logging: process.env.DB_LOGGING === 'true',
     }),
     IdentityModule,
+    OrgModule,
   ],
 })
 export class AppModule {}
