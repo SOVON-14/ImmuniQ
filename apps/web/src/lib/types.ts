@@ -54,6 +54,7 @@ export interface VaccinationAct {
   site?: string;
   route?: string;
   lotNumber?: string;
+  source?: string;
   vaccine?: { id: string; name?: string; code?: string };
   [key: string]: unknown;
 }
