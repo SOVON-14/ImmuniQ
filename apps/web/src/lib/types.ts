@@ -31,6 +31,8 @@ export interface Vaccine {
   code?: string;
   name?: string;
   status?: string;
+  description?: string;
+  sourceReference?: string;
   [key: string]: unknown;
 }
 

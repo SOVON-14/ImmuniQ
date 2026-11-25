@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard';
 import Beneficiaries from './pages/Beneficiaries';
 import BeneficiaryDetail from './pages/BeneficiaryDetail';
 import Vaccination from './pages/Vaccination';
+import Referentials from './pages/Referentials';
 import Placeholder from './pages/Placeholder';
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
@@ -36,7 +37,7 @@ export default function App() {
         <Route path="/beneficiaires" element={<Beneficiaries />} />
         <Route path="/beneficiaires/:id" element={<BeneficiaryDetail />} />
         <Route path="/vaccination" element={<Vaccination />} />
-        <Route path="/referentiels" element={<Placeholder title="Référentiels" />} />
+        <Route path="/referentiels" element={<Referentials />} />
         <Route path="/campagnes" element={<Placeholder title="Campagnes" />} />
         <Route path="/stocks" element={<Placeholder title="Stocks & lots" />} />
         <Route path="/froid" element={<Placeholder title="Chaîne du froid" />} />
