@@ -10,6 +10,7 @@ import { RecordModule } from './modules/record/record.module';
 import { SyncModule } from './modules/sync/sync.module';
 import { LogisticsModule } from './modules/logistics/logistics.module';
 import { ColdChainModule } from './modules/cold-chain/cold-chain.module';
+import { CampaignsModule } from './modules/campaigns/campaigns.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { ColdChainModule } from './modules/cold-chain/cold-chain.module';
     SyncModule,
     LogisticsModule,
     ColdChainModule,
+    CampaignsModule,
   ],
 })
 export class AppModule {}
