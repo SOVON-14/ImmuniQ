@@ -8,6 +8,7 @@ import { ReferentialsModule } from './modules/referentials/referentials.module';
 import { VaccinationActsModule } from './modules/vaccination-acts/vaccination-acts.module';
 import { RecordModule } from './modules/record/record.module';
 import { SyncModule } from './modules/sync/sync.module';
+import { LogisticsModule } from './modules/logistics/logistics.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { SyncModule } from './modules/sync/sync.module';
     VaccinationActsModule,
     RecordModule,
     SyncModule,
+    LogisticsModule,
   ],
 })
 export class AppModule {}
