@@ -13,6 +13,8 @@ import ColdChain from './pages/ColdChain';
 import Notifications from './pages/Notifications';
 import Reports from './pages/Reports';
 import Users from './pages/Users';
+import Admin from './pages/Admin';
+import Audit from './pages/Audit';
 import Placeholder from './pages/Placeholder';
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
@@ -50,8 +52,8 @@ export default function App() {
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/rapports" element={<Reports />} />
         <Route path="/utilisateurs" element={<Users />} />
-        <Route path="/admin" element={<Placeholder title="Administration" />} />
-        <Route path="/audit" element={<Placeholder title="Journal d'audit" />} />
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/audit" element={<Audit />} />
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>

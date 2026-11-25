@@ -145,8 +145,12 @@ export interface AuditEntry {
   id: string;
   actorId?: string;
   action?: string;
+  resourceType?: string;
+  resourceId?: string;
   result?: string;
   createdAt?: string;
   ip?: string;
+  userAgent?: string;
+  details?: Record<string, unknown>;
   [key: string]: unknown;
 }
