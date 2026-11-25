@@ -11,6 +11,7 @@ import { SyncModule } from './modules/sync/sync.module';
 import { LogisticsModule } from './modules/logistics/logistics.module';
 import { ColdChainModule } from './modules/cold-chain/cold-chain.module';
 import { CampaignsModule } from './modules/campaigns/campaigns.module';
+import { NotificationsModule } from './modules/notifications/notifications.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { CampaignsModule } from './modules/campaigns/campaigns.module';
     LogisticsModule,
     ColdChainModule,
     CampaignsModule,
+    NotificationsModule,
   ],
 })
 export class AppModule {}
