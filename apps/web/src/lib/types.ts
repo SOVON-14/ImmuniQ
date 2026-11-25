@@ -94,6 +94,8 @@ export interface Product {
   name?: string;
   code?: string;
   unit?: string;
+  type?: string;
+  vaccineId?: string;
   [key: string]: unknown;
 }
 
@@ -101,8 +103,14 @@ export interface Lot {
   id: string;
   lotNumber?: string;
   productId?: string;
+  product?: Product;
   expiryDate?: string;
-  quantity?: number;
+  receiptDate?: string;
+  quantityInitial?: number;
+  manufacturer?: string;
+  supplier?: string;
+  structureId?: string;
+  status?: string;
   [key: string]: unknown;
 }
 
