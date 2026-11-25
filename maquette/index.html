@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ImmuniQ — Maquette interactive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#083860; --navy-2:#0E4A7A; --teal:#00A8A8; --teal-dark:#00A0A0;
+    --mist:#E8F0F0; --mist-light:#F0F7F7; --surface:#fff;
+    --text:#1A202C; --muted:#4A5568; --border:#E2E8F0;
+    --success:#2F855A; --warning:#B7791F; --danger:#C53030; --info:#0891B2;
+    --radius:10px; --shadow:0 1px 3px rgba(8,56,96,.08);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Poppins','Segoe UI',system-ui,sans-serif;background:var(--mist-light);color:var(--text);font-size:14px}
+
+  /* ===== Shell ===== */
+  .app{display:flex;min-height:100vh}
+  .sidebar{width:240px;background:var(--navy);color:#fff;display:flex;flex-direction:column;position:fixed;top:0;bottom:0;z-index:20}
+  .brand{padding:20px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.1)}
+  .brand .logo{width:36px;height:36px;border-radius:8px;background:var(--teal);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-size:14px}
+  .brand b{font-size:16px;letter-spacing:.5px}
+  .brand span{display:block;font-size:10px;color:#9FC3E8;font-weight:300}
+  .nav{flex:1;overflow-y:auto;padding:12px 0}
+  .nav .section{padding:14px 20px 6px;font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#7FA8CC}
+  .nav a{display:flex;align-items:center;gap:10px;padding:10px 20px;color:#CFE3F5;text-decoration:none;font-size:13px;border-left:3px solid transparent;cursor:pointer}
+  .nav a:hover{background:rgba(255,255,255,.06);color:#fff}
+  .nav a.active{background:rgba(0,168,168,.15);color:#fff;border-left-color:var(--teal)}
+  .nav a .ico{width:18px;text-align:center}
+  .main{flex:1;margin-left:240px;display:flex;flex-direction:column;min-width:0}
+  .topbar{height:60px;background:#fff;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:10}
+  .topbar .search{background:var(--mist-light);border:1px solid var(--border);border-radius:20px;padding:7px 16px;width:340px;color:var(--muted)}
+  .topbar .right{display:flex;align-items:center;gap:16px}
+  .topbar .badge{background:var(--mist);border-radius:20px;padding:4px 12px;font-size:11px;color:var(--navy);font-weight:500}
+  .avatar{width:34px;height:34px;border-radius:50%;background:var(--teal);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12px}
+  .content{padding:24px;flex:1}
+
+  /* ===== Composants ===== */
+  .screen{display:none}
+  .screen.active{display:block}
+  .page-title{font-size:22px;font-weight:600;color:var(--navy);margin-bottom:4px}
+  .page-sub{color:var(--muted);margin-bottom:20px;font-size:13px}
+  .grid{display:grid;gap:16px}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:18px}
+  .card h3{font-size:13px;color:var(--muted);font-weight:500;margin-bottom:8px}
+  .card .big{font-size:26px;font-weight:700;color:var(--navy)}
+  .card .delta{font-size:11px;margin-top:6px}
+  .up{color:var(--success)} .down{color:var(--danger)}
+  .chart{height:160px;display:flex;align-items:flex-end;gap:6px;padding-top:10px}
+  .chart div{flex:1;background:linear-gradient(180deg,var(--teal),var(--navy-2));border-radius:4px 4px 0 0;opacity:.85}
+
+  table{width:100%;border-collapse:collapse;background:#fff;border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);border:1px solid var(--border)}
+  th{background:var(--mist);text-align:left;padding:10px 14px;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted)}
+  td{padding:11px 14px;border-top:1px solid var(--border);font-size:13px}
+  tr:hover td{background:var(--mist-light)}
+
+  .btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:8px;border:none;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer}
+  .btn-primary{background:var(--teal);color:#fff}
+  .btn-primary:hover{background:var(--teal-dark)}
+  .btn-navy{background:var(--navy);color:#fff}
+  .btn-ghost{background:#fff;border:1px solid var(--border);color:var(--muted)}
+  .btn-sm{padding:5px 10px;font-size:11px}
+
+  .pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:10px;font-weight:600}
+  .pill-green{background:#C6F6D5;color:var(--success)}
+  .pill-blue{background:#BEE3F8;color:#2B6CB0}
+  .pill-orange{background:#FEEBC8;color:var(--warning)}
+  .pill-red{background:#FED7D7;color:var(--danger)}
+  .pill-grey{background:#E2E8F0;color:var(--muted)}
+
+  .split{display:grid;grid-template-columns:1.6fr 1fr;gap:16px}
+  .timeline{position:relative;padding-left:24px}
+  .timeline::before{content:'';position:absolute;left:7px;top:6px;bottom:6px;width:2px;background:var(--border)}
+  .t-item{position:relative;padding-bottom:16px}
+  .t-item::before{content:'';position:absolute;left:-21px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--teal);border:2px solid #fff;box-shadow:0 0 0 2px var(--teal)}
+  .t-item.done::before{background:var(--success)}
+  .t-item .t-date{font-size:10px;color:var(--muted)}
+  .t-item .t-label{font-size:13px;font-weight:500}
+  .t-item .t-detail{font-size:11px;color:var(--muted)}
+
+  /* ===== Login ===== */
+  .login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--navy) 0%,#0A4A7E 60%,var(--teal-dark) 100%)}
+  .login-card{background:#fff;border-radius:16px;padding:40px;width:400px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+  .login-card .logo-big{width:52px;height:52px;border-radius:12px;background:var(--teal);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;margin-bottom:16px;font-size:18px}
+  .login-card h1{font-size:20px;color:var(--navy);margin-bottom:4px}
+  .login-card p{color:var(--muted);font-size:12px;margin-bottom:24px}
+  .field{margin-bottom:14px}
+  .field label{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
+  .field input,.field select{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-family:inherit;font-size:13px}
+  .field input:focus{outline:2px solid var(--teal);border-color:transparent}
+  .login-card .btn{width:100%;justify-content:center;padding:11px}
+  .login-note{margin-top:16px;text-align:center;font-size:10px;color:var(--muted)}
+
+  /* ===== Mobile frame ===== */
+  .phone{width:380px;margin:0 auto;background:#fff;border-radius:28px;border:10px solid #1A202C;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.25)}
+  .phone .status{height:34px;background:var(--navy);display:flex;align-items:center;justify-content:space-between;padding:0 20px;color:#fff;font-size:10px}
+  .phone .m-body{min-height:560px;position:relative}
+  .m-header{background:var(--navy);color:#fff;padding:14px 18px;display:flex;align-items:center;gap:10px}
+  .m-header .avatar{width:30px;height:30px;font-size:11px}
+  .m-header b{font-size:13px;display:block}
+  .m-header span{font-size:10px;color:#9FC3E8}
+  .m-content{padding:14px}
+  .m-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px;box-shadow:var(--shadow)}
+  .m-card h4{font-size:13px;color:var(--navy);margin-bottom:6px}
+  .m-field{background:var(--mist-light);border-radius:8px;padding:10px 12px;font-size:12px;margin-bottom:8px;display:flex;justify-content:space-between}
+  .m-btn{display:block;width:100%;text-align:center;padding:12px;border-radius:10px;background:var(--teal);color:#fff;font-weight:600;font-size:13px;margin-top:8px}
+  .m-btn.ghost{background:#fff;color:var(--navy);border:1px solid var(--border)}
+  .sync-bar{position:absolute;bottom:0;left:0;right:0;background:#FFF7E6;border-top:1px solid #F0D9A8;padding:8px 14px;font-size:10px;color:#8a6d1a;display:flex;align-items:center;gap:6px}
+  .tabbar{display:flex;background:#fff;border-top:1px solid var(--border)}
+  .tabbar div{flex:1;text-align:center;padding:10px 0;font-size:9px;color:var(--muted)}
+  .tabbar div.on{color:var(--teal);font-weight:600}
+
+  /* ===== Portail (grand public) ===== */
+  .portal-header{background:var(--navy);color:#fff;padding:18px 0}
+  .portal-header .inner{max-width:900px;margin:0 auto;padding:0 24px;display:flex;justify-content:space-between;align-items:center}
+  .portal-header nav a{color:#CFE3F5;text-decoration:none;margin-left:24px;font-size:13px}
+  .portal-hero{background:linear-gradient(120deg,var(--navy),var(--navy-2));color:#fff;padding:60px 0;text-align:center}
+  .portal-hero h1{font-size:32px;font-weight:600;margin-bottom:10px}
+  .portal-hero p{color:#BFD9EE;max-width:560px;margin:0 auto 24px}
+  .portal-body{max-width:900px;margin:0 auto;padding:40px 24px}
+  .vax-card{display:flex;align-items:center;gap:14px;padding:14px;border:1px solid var(--border);border-radius:12px;margin-bottom:10px;background:#fff}
+  .vax-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+
+  .demo-switch{position:fixed;bottom:16px;right:16px;z-index:100;background:#fff;border:1px solid var(--border);border-radius:12px;padding:10px;box-shadow:0 8px 30px rgba(0,0,0,.15);font-size:11px}
+  .demo-switch select{font-family:inherit;font-size:11px;padding:5px;border:1px solid var(--border);border-radius:6px}
+  @media(max-width:1100px){.g4{grid-template-columns:repeat(2,1fr)}.split{grid-template-columns:1fr}.sidebar{display:none}.main{margin-left:0}}
+</style>
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<div class="screen active" id="scr-login">
+  <div class="login-wrap">
+    <div class="login-card">
+      <div class="logo-big">IQ</div>
+      <h1>ImmuniQ</h1>
+      <p>Système national de gestion et de suivi de la vaccination — Togo</p>
+      <div class="field"><label>Identifiant</label><input placeholder="ex. vaccinateur.tsevi"></div>
+      <div class="field"><label>Mot de passe</label><input type="password" placeholder="••••••••"></div>
+      <div class="field"><label>Second facteur (TOTP)</label><input placeholder="000000" maxlength="6"></div>
+      <button class="btn btn-primary" onclick="go('scr-dashboard')">Se connecter</button>
+      <div class="login-note">Accès réservé aux utilisateurs autorisés · <a href="#" onclick="go('scr-portail');return false" style="color:var(--teal)">Espace bénéficiaire →</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ APP WEB ============ -->
+<div class="app screen" id="scr-dashboard">
+  <aside class="sidebar">
+    <div class="brand"><div class="logo">IQ</div><div><b>ImmuniQ</b><span>Santé · Togo</span></div></div>
+    <nav class="nav">
+      <div class="section">Référentiels</div>
+      <a data-s="scr-referentiels" onclick="go('scr-referentiels')"><span class="ico">▦</span>Calendriers &amp; règles</a>
+      <div class="section">Pilotage</div>
+      <a class="active" data-s="scr-dashboard" onclick="go('scr-dashboard')"><span class="ico">◈</span>Tableau de bord</a>
+      <a data-s="scr-beneficiaires" onclick="go('scr-beneficiaires')"><span class="ico">☻</span>Bénéficiaires</a>
+      <a data-s="scr-vaccination" onclick="go('scr-vaccination')"><span class="ico">✚</span>Vaccination</a>
+      <a data-s="scr-campagnes" onclick="go('scr-campagnes')"><span class="ico">⚑</span>Campagnes</a>
+      <div class="section">Logistique</div>
+      <a data-s="scr-stocks" onclick="go('scr-stocks')"><span class="ico">▤</span>Stocks &amp; lots</a>
+      <a data-s="scr-froid" onclick="go('scr-froid')"><span class="ico">❄</span>Chaîne du froid</a>
+      <div class="section">Analyse</div>
+      <a data-s="scr-rapports" onclick="go('scr-rapports')"><span class="ico">◫</span>Rapports &amp; exports</a>
+      <a data-s="scr-notifications" onclick="go('scr-notifications')"><span class="ico">✉</span>Notifications</a>
+      <div class="section">Système</div>
+      <a data-s="scr-utilisateurs" onclick="go('scr-utilisateurs')"><span class="ico">⚙</span>Utilisateurs &amp; rôles</a>
+      <a data-s="scr-audit" onclick="go('scr-audit')"><span class="ico">≡</span>Journal d'audit</a>
+    </nav>
+  </aside>
+  <div class="main">
+    <header class="topbar">
+      <input class="search" placeholder="Rechercher bénéficiaire, structure, campagne…">
+      <div class="right">
+        <span class="badge">Région Maritime · District TSÉVIÉ</span>
+        <span style="font-size:11px;color:var(--muted)">3 alertes non traitées</span>
+        <div class="avatar">JD</div>
+      </div>
+    </header>
+    <div class="content">
+
+      <!-- DASHBOARD -->
+      <div class="screen active" id="scr-dashboard">
+        <h1 class="page-title">Tableau de bord — District de Tsévié</h1>
+        <p class="page-sub">Actualisé il y a 12 min · données synchronisées au 23/11/2026 14:32</p>
+        <div class="grid g4" style="margin-bottom:16px">
+          <div class="card"><h3>Doses administrées (mois)</h3><div class="big">8 412</div><div class="delta up">▲ 12,4 % vs oct.</div></div>
+          <div class="card"><h3>Bénéficiaires suivis</h3><div class="big">64 208</div><div class="delta up">▲ 3,1 %</div></div>
+          <div class="card"><h3>Échéances en retard</h3><div class="big" style="color:var(--warning)">1 847</div><div class="delta down">À relancer</div></div>
+          <div class="card"><h3>Alertes chaîne du froid</h3><div class="big" style="color:var(--danger)">2</div><div class="delta down">Incidents ouverts</div></div>
+        </div>
+        <div class="split">
+          <div class="card">
+            <h3>Activité vaccinale — 12 derniers mois</h3>
+            <div class="chart">
+              <div style="height:35%"></div><div style="height:42%"></div><div style="height:48%"></div><div style="height:40%"></div><div style="height:55%"></div><div style="height:62%"></div><div style="height:58%"></div><div style="height:70%"></div><div style="height:66%"></div><div style="height:78%"></div><div style="height:85%"></div><div style="height:92%"></div>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Alertes prioritaires</h3>
+            <div style="font-size:12px;line-height:2">
+              <span class="pill pill-red">FROID</span> Excursion température — Frigo CS Adidogomé (2 h)<br>
+              <span class="pill pill-orange">STOCK</span> Pentavalent sous seuil — Dépôt Tsévié<br>
+              <span class="pill pill-blue">RAPPEL</span> 214 rappels DTC-HepB-Hib en attente d'envoi<br>
+              <span class="pill pill-grey">SYNC</span> 3 opérations mobiles en attente (zone sans réseau)
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BENEFICIAIRES -->
+      <div class="screen" id="scr-beneficiaires">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div><h1 class="page-title">Bénéficiaires</h1><p class="page-sub">64 208 dossiers · identifiant ImmuniQ permanent</p></div>
+          <button class="btn btn-primary">+ Nouveau bénéficiaire</button>
+        </div>
+        <div class="card" style="padding:12px;margin-bottom:14px;display:flex;gap:10px">
+          <input placeholder="IMQ-id, nom, téléphone…" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-family:inherit;font-size:12px">
+          <select style="padding:8px;border:1px solid var(--border);border-radius:8px;font-family:inherit;font-size:12px"><option>Toutes structures</option><option>CS Adidogomé</option><option>Équipe mobile N1</option></select>
+          <select style="padding:8px;border:1px solid var(--border);border-radius:8px;font-family:inherit;font-size:12px"><option>Tous âges</option></select>
+        </div>
+        <table>
+          <thead><tr><th>IMQ-ID</th><th>Nom</th><th>Âge</th><th>Structure</th><th>Dernière dose</th><th>Prochaine échéance</th><th>Statut</th><th></th></tr></thead>
+          <tbody>
+            <tr><td style="font-family:monospace">IMQ-8F2K4P</td><td>Kossi Mensah</td><td>8 mois</td><td>CS Adidogomé</td><td>Penta 3 — 02/10/2026</td><td>Rougeole 1 — 12/01/2027</td><td><span class="pill pill-green">À jour</span></td><td><button class="btn btn-ghost btn-sm">Dossier</button></td></tr>
+            <tr><td style="font-family:monospace">IMQ-9T1R7M</td><td>Akossiwa Tété</td><td>14 mois</td><td>Équipe mobile N1</td><td>BCC 1 — 15/08/2026</td><td>VAA 2 — <b style="color:var(--danger)">en retard</b></td><td><span class="pill pill-orange">Retard</span></td><td><button class="btn btn-ghost btn-sm">Dossier</button></td></tr>
+            <tr><td style="font-family:monospace">IMQ-3W6Y2Q</td><td>Yao Adjovi</td><td>22 ans</td><td>CS Bè-Kpota</td><td>VPH 1 — 20/11/2026</td><td>VPH 2 — 20/12/2026</td><td><span class="pill pill-green">À jour</span></td><td><button class="btn btn-ghost btn-sm">Dossier</button></td></tr>
+            <tr><td style="font-family:monospace">IMQ-7H4N8C</td><td>Essi Dossou</td><td>4 ans</td><td>CS Adidogomé</td><td>VAA rappel 1 — 05/09/2026</td><td>VAA rappel 2 — <b style="color:var(--danger)">en retard</b></td><td><span class="pill pill-red">Retard ×2</span></td><td><button class="btn btn-ghost btn-sm">Dossier</button></td></tr>
+            <tr><td style="font-family:monospace">IMQ-2J9F5L</td><td>Clarisse Agbeko</td><td>30 ans</td><td>CS Bè-Kpota</td><td>Fièvre jaune — 01/10/2026</td><td>Aucune</td><td><span class="pill pill-blue">Importé</span></td><td><button class="btn btn-ghost btn-sm">Dossier</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- DOSSIER VACCINAL -->
+      <div class="screen" id="scr-vaccination">
+        <h1 class="page-title">Dossier vaccinal — Kossi Mensah</h1>
+        <p class="page-sub">IMQ-8F2K4P · né(e) le 12/03/2026 · représentant : Mensah Koffi (père)</p>
+        <div class="split">
+          <div>
+            <div class="card" style="margin-bottom:16px">
+              <h3>Historique des vaccinations</h3>
+              <table>
+                <thead><tr><th>Date</th><th>Vaccin</th><th>Dose</th><th>Lieu</th><th>Lot</th><th>Statut</th></tr></thead>
+                <tbody>
+                  <tr><td>02/10/2026</td><td>Penta (DTC-HepB-Hib)</td><td>3</td><td>CS Adidogomé</td><td>PCV-2026-A17</td><td><span class="pill pill-green">Administrée</span></td></tr>
+                  <tr><td>18/07/2026</td><td>Penta (DTC-HepB-Hib)</td><td>2</td><td>CS Adidogomé</td><td>PCV-2026-A09</td><td><span class="pill pill-green">Administrée</span></td></tr>
+                  <tr><td>04/04/2026</td><td>Penta (DTC-HepB-Hib)</td><td>1</td><td>Équipe mobile N1</td><td>PCV-2026-A02</td><td><span class="pill pill-green">Administrée</span></td></tr>
+                  <tr><td>28/03/2026</td><td>BCG</td><td>1</td><td>CS Adidogomé</td><td>BCG-2025-Z41</td><td><span class="pill pill-green">Administrée</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="card">
+              <h3>Échéancier — calendrier national v2026.3</h3>
+              <div class="timeline">
+                <div class="t-item done"><div class="t-date">28/03/2026</div><div class="t-label">BCG</div><div class="t-detail">Administrée — CS Adidogomé</div></div>
+                <div class="t-item done"><div class="t-date">04/04/2026</div><div class="t-label">Penta 1</div><div class="t-detail">Administrée — Équipe mobile N1</div></div>
+                <div class="t-item done"><div class="t-date">18/07/2026</div><div class="t-label">Penta 2</div><div class="t-detail">Administrée — CS Adidogomé</div></div>
+                <div class="t-item done"><div class="t-date">02/10/2026</div><div class="t-label">Penta 3</div><div class="t-detail">Administrée — CS Adidogomé</div></div>
+                <div class="t-item"><div class="t-date">12/01/2027</div><div class="t-label">Rougeole 1</div><div class="t-detail">Recommandée (réf. calendrier national v2026.3)</div></div>
+              </div>
+            </div>
+          </div>
+          <div>
+            <div class="card" style="margin-bottom:16px">
+              <h3>Représentants légaux</h3>
+              <div style="font-size:13px;line-height:1.8">
+                <b>Mensah Koffi</b> — père<br><span style="color:var(--muted);font-size:11px">Droits : consultation, notifications · valide jusqu'au 12/03/2046</span>
+              </div>
+              <button class="btn btn-ghost btn-sm" style="margin-top:10px">+ Ajouter un représentant</button>
+            </div>
+            <div class="card" style="margin-bottom:16px">
+              <h3>Documents</h3>
+              <div style="font-size:12px;line-height:2">📄 Carnet vaccination (PDF)<br>📎 Justificatif naissance<br>📎 Photo</div>
+              <button class="btn btn-ghost btn-sm" style="margin-top:8px">Télécharger attestation</button>
+            </div>
+            <div class="card">
+              <h3>Actions</h3>
+              <button class="btn btn-primary" style="width:100%;justify-content:center;margin-bottom:8px">Enregistrer une vaccination</button>
+              <button class="btn btn-ghost" style="width:100%;justify-content:center;margin-bottom:8px">Envoyer un rappel SMS</button>
+              <button class="btn btn-ghost" style="width:100%;justify-content:center">Signaler un doublon</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CAMPAGNES -->
+      <div class="screen" id="scr-campagnes">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div><h1 class="page-title">Campagnes de vaccination</h1><p class="page-sub">3 campagnes actives · 1 en planification</p></div>
+          <button class="btn btn-primary">+ Nouvelle campagne</button>
+        </div>
+        <div class="grid g3">
+          <div class="card">
+            <div style="display:flex;justify-content:space-between"><h3 style="color:var(--navy);font-weight:600">Campagne rougeole 2026</h3><span class="pill pill-green">En cours</span></div>
+            <p style="font-size:12px;color:var(--muted);margin:8px 0">Zone : Maritime · Objectif : 45 000 enfants 9–59 mois</p>
+            <div style="background:var(--mist);border-radius:6px;height:8px;margin:10px 0"><div style="width:68%;height:100%;background:var(--teal);border-radius:6px"></div></div>
+            <div style="font-size:11px;color:var(--muted)">30 600 / 45 000 doses (68 %) · 42 équipes déployées</div>
+          </div>
+          <div class="card">
+            <div style="display:flex;justify-content:space-between"><h3 style="color:var(--navy);font-weight:600">VPH — ados scolarisées</h3><span class="pill pill-blue">En cours</span></div>
+            <p style="font-size:12px;color:var(--muted);margin:8px 0">Zone : Maritime · Collèges/lycées · 2 doses</p>
+            <div style="background:var(--mist);border-radius:6px;height:8px;margin:10px 0"><div style="width:41%;height:100%;background:var(--teal);border-radius:6px"></div></div>
+            <div style="font-size:11px;color:var(--muted)">12 300 / 30 000 dose 1 · 8 100 dose 2</div>
+          </div>
+          <div class="card">
+            <div style="display:flex;justify-content:space-between"><h3 style="color:var(--navy);font-weight:600">Rattrapage Pentavalent</h3><span class="pill pill-grey">Planifiée</span></div>
+            <p style="font-size:12px;color:var(--muted);margin:8px 0">Zone : Savanes · Jan–Mars 2027</p>
+            <div style="background:var(--mist);border-radius:6px;height:8px;margin:10px 0"><div style="width:5%;height:100%;background:var(--teal);border-radius:6px"></div></div>
+            <div style="font-size:11px;color:var(--muted)">Préparation équipes et stocks</div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:16px">
+          <h3>Suivi des séances — Campagne rougeole</h3>
+          <table>
+            <thead><tr><th>Date</th><th>Site</th><th>Équipe</th><th>Objectif</th><th>Réalisé</th><th>Statut</th></tr></thead>
+            <tbody>
+              <tr><td>23/11/2026</td><td>CS Adidogomé</td><td>Équipe A3</td><td>850</td><td>812</td><td><span class="pill pill-green">Fait</span></td></tr>
+              <tr><td>24/11/2026</td><td>École primaire Agoè</td><td>Équipe B1</td><td>1 200</td><td>—</td><td><span class="pill pill-blue">Planifiée</span></td></tr>
+              <tr><td>25/11/2026</td><td>Marché de Tsévié</td><td>Équipe A3</td><td>600</td><td>—</td><td><span class="pill pill-blue">Planifiée</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- STOCKS -->
+      <div class="screen" id="scr-stocks">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div><h1 class="page-title">Stocks &amp; lots</h1><p class="page-sub">Dépôt régional Tsévié · seuils d'alerte configurés</p></div>
+          <button class="btn btn-primary">+ Mouvement</button>
+        </div>
+        <div class="grid g4" style="margin-bottom:16px">
+          <div class="card"><h3>Stock disponible</h3><div class="big">48 320</div><div class="delta" style="color:var(--muted)">doses tous vaccins</div></div>
+          <div class="card"><h3>Sous seuil</h3><div class="big" style="color:var(--warning)">3 produits</div><div class="delta" style="color:var(--muted)">réapprovisionnement</div></div>
+          <div class="card"><h3>Proches péremption</h3><div class="big" style="color:var(--danger)">1 240</div><div class="delta" style="color:var(--muted)">doses &lt; 3 mois</div></div>
+          <div class="card"><h3>Mouvements (7 j)</h3><div class="big">126</div><div class="delta up">▲ traçabilité complète</div></div>
+        </div>
+        <table>
+          <thead><tr><th>Produit</th><th>Lot</th><th>Qté</th><th>Péremption</th><th>Emplacement</th><th>Seuil</th><th>Statut</th></tr></thead>
+          <tbody>
+            <tr><td>Penta (DTC-HepB-Hib)</td><td>PCV-2026-A17</td><td>12 400</td><td>06/2028</td><td>Chambre froide A</td><td>5 000</td><td><span class="pill pill-green">OK</span></td></tr>
+            <tr><td>Rougeole-RR</td><td>MR-2026-B04</td><td>3 100</td><td>11/2026</td><td>Chambre froide A</td><td>8 000</td><td><span class="pill pill-orange">Sous seuil</span></td></tr>
+            <tr><td>VPH</td><td>HPV-2026-C11</td><td>8 750</td><td>03/2028</td><td>Chambre froide B</td><td>4 000</td><td><span class="pill pill-green">OK</span></td></tr>
+            <tr><td>BCG</td><td>BCG-2025-Z41</td><td>940</td><td><b style="color:var(--danger)">02/2027</b></td><td>Congélateur</td><td>1 500</td><td><span class="pill pill-red">Péremption proche</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- FROID -->
+      <div class="screen" id="scr-froid">
+        <h1 class="page-title">Chaîne du froid</h1>
+        <p class="page-sub">12 équipements suivis · seuils : +2 °C à +8 °C (vaccins)</p>
+        <div class="grid g2">
+          <div class="card">
+            <h3>Incidents ouverts</h3>
+            <table>
+              <thead><tr><th>Équipement</th><th>Début</th><th>Écart</th><th>Lots concernés</th><th>Statut</th></tr></thead>
+              <tbody>
+                <tr><td>Frigo CS Adidogomé</td><td>23/11 09:14</td><td>+11,2 °C (2 h)</td><td>Penta A17, ROR B04</td><td><span class="pill pill-red">En évaluation</span></td></tr>
+                <tr><td>Cold box Équipe B1</td><td>22/11 16:40</td><td>+9,8 °C (1 h 20)</td><td>VPH C11</td><td><span class="pill pill-orange">En traitement</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card">
+            <h3>Derniers relevés</h3>
+            <table>
+              <thead><tr><th>Équipement</th><th>Valeur</th><th>Relevé</th><th>Source</th></tr></thead>
+              <tbody>
+                <tr><td>Frigo CS Adidogomé</td><td style="color:var(--danger);font-weight:600">+11,2 °C</td><td>23/11 11:14</td><td>Manuel</td></tr>
+                <tr><td>Frigo CS Bè-Kpota</td><td style="color:var(--success);font-weight:600">+4,6 °C</td><td>23/11 11:00</td><td>Automatique</td></tr>
+                <tr><td>Congélateur dépôt</td><td style="color:var(--success);font-weight:600">-18,2 °C</td><td>23/11 10:55</td><td>Automatique</td></tr>
+                <tr><td>Cold box Équipe A3</td><td style="color:var(--warning);font-weight:600">+8,9 °C</td><td>23/11 10:30</td><td>Manuel</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card" style="margin-top:16px">
+          <h3>Équipements</h3>
+          <table>
+            <thead><tr><th>Équipement</th><th>Type</th><th>Site</th><th>Responsable</th><th>Dernier relevé</th><th>Statut</th></tr></thead>
+            <tbody>
+              <tr><td>Frigo #F-014</td><td>Réfrigérateur</td><td>CS Adidogomé</td><td>A. Agbeko</td><td>+11,2 °C</td><td><span class="pill pill-red">Incident</span></td></tr>
+              <tr><td>Frigo #F-021</td><td>Réfrigérateur</td><td>CS Bè-Kpota</td><td>K. Mensah</td><td>+4,6 °C</td><td><span class="pill pill-green">OK</span></td></tr>
+              <tr><td>Cold box #CB-07</td><td>Enceinte passive</td><td>Équipe B1</td><td>Équipe mobile</td><td>+9,8 °C</td><td><span class="pill pill-orange">Surveillé</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- UTILISATEURS -->
+      <div class="screen" id="scr-utilisateurs">
+        <h1 class="page-title">Utilisateurs &amp; habilitations</h1>
+        <p class="page-sub">Comptes nominatifs · RBAC + périmètre organisationnel · MFA pour profils sensibles</p>
+        <div class="card" style="padding:12px;margin-bottom:14px;display:flex;justify-content:space-between">
+          <input placeholder="Rechercher un utilisateur…" style="flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:8px;font-family:inherit;font-size:12px">
+          <button class="btn btn-primary">+ Créer un compte</button>
+        </div>
+        <table>
+          <thead><tr><th>Utilisateur</th><th>Rôle</th><th>Structure / périmètre</th><th>MFA</th><th>Statut</th><th>Dernière connexion</th><th></th></tr></thead>
+          <tbody>
+            <tr><td><b>Afi Mensah</b><br><span style="color:var(--muted);font-size:11px">afi.mensah@immuniq.tg</span></td><td><span class="pill pill-blue">Responsable structure</span></td><td>CS Adidogomé</td><td>Oui</td><td><span class="pill pill-green">Actif</span></td><td>23/11 08:42</td><td><button class="btn btn-ghost btn-sm">Gérer</button></td></tr>
+            <tr><td><b>Koffi Agbeko</b><br><span style="color:var(--muted);font-size:11px">k.agbeko@immuniq.tg</span></td><td><span class="pill pill-green">Vaccinateur</span></td><td>Équipe mobile A3</td><td>Oui</td><td><span class="pill pill-green">Actif</span></td><td>23/11 07:15</td><td><button class="btn btn-ghost btn-sm">Gérer</button></td></tr>
+            <tr><td><b>Dr. E. Dossou</b><br><span style="color:var(--muted);font-size:11px">e.dossou@immuniq.tg</span></td><td><span class="pill pill-orange">Autorité sanitaire</span></td><td>District Tsévié</td><td>Oui</td><td><span class="pill pill-green">Actif</span></td><td>22/11 16:03</td><td><button class="btn btn-ghost btn-sm">Gérer</button></td></tr>
+            <tr><td><b>Stock Manager N2</b><br><span style="color:var(--muted);font-size:11px">stock.n2@immuniq.tg</span></td><td><span class="pill pill-grey">Gestionnaire stock</span></td><td>Dépôt Tsévié</td><td>Non</td><td><span class="pill pill-orange">En attente MFA</span></td><td>—</td><td><button class="btn btn-ghost btn-sm">Gérer</button></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- AUDIT -->
+      <div class="screen" id="scr-audit">
+        <h1 class="page-title">Journal d'audit</h1>
+        <p class="page-sub">Piste d'audit append-only · consultations et modifications sensibles tracées</p>
+        <table>
+          <thead><tr><th>Horodatage</th><th>Acteur</th><th>Action</th><th>Objet</th><th>Résultat</th><th>IP</th></tr></thead>
+          <tbody>
+            <tr><td>23/11 11:14</td><td>A. Mensah</td><td><code>temperature.record</code></td><td>Frigo F-014</td><td><span class="pill pill-green">OK</span></td><td>102.89.x.x</td></tr>
+            <tr><td>23/11 10:52</td><td>K. Agbeko</td><td><code>acte.validate</code></td><td>Penta 3 — IMQ-8F2K4P</td><td><span class="pill pill-green">OK</span></td><td>mobile · hors ligne→sync</td></tr>
+            <tr><td>23/11 10:31</td><td>System</td><td><code>notification.send</code></td><td>Rappel VAA — 214 destinataires</td><td><span class="pill pill-green">OK</span></td><td>—</td></tr>
+            <tr><td>23/11 09:48</td><td>Inconnu</td><td><code>auth.login</code></td><td>stock.n2@immuniq.tg</td><td><span class="pill pill-red">Échec ×3</span></td><td>197.x.x.x</td></tr>
+            <tr><td>23/11 09:12</td><td>Dr. E. Dossou</td><td><code>export.create</code></td><td>Rapport couverture district</td><td><span class="pill pill-green">OK</span></td><td>102.89.x.x</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- REFERENTIELS -->
+      <div class="screen" id="scr-referentiels">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div><h1 class="page-title">Référentiels vaccinaux</h1><p class="page-sub">Calendriers versionnés · validation médicale obligatoire avant publication</p></div>
+          <button class="btn btn-primary">+ Nouvelle version</button>
+        </div>
+        <div class="card" style="margin-bottom:16px;padding:14px">
+          <h3>Calendrier national de routine — v2026.3</h3>
+          <table>
+            <thead><tr><th>Âge</th><th>Vaccin</th><th>Dose</th><th>Contexte</th><th>Statut</th></tr></thead>
+            <tbody>
+              <tr><td>Naissance</td><td>BCG</td><td>1</td><td>Routine</td><td><span class="pill pill-green">Publié</span></td></tr>
+              <tr><td>6 semaines</td><td>Penta (DTC-HepB-Hib)</td><td>1</td><td>Routine</td><td><span class="pill pill-green">Publié</span></td></tr>
+              <tr><td>10 semaines</td><td>Penta</td><td>2</td><td>Routine</td><td><span class="pill pill-green">Publié</span></td></tr>
+              <tr><td>14 semaines</td><td>Penta + VPI</td><td>3</td><td>Routine</td><td><span class="pill pill-green">Publié</span></td></tr>
+              <tr><td>9 mois</td><td>Rougeole-RR</td><td>1</td><td>Routine + campagne</td><td><span class="pill pill-green">Publié</span></td></tr>
+              <tr><td>15 mois</td><td>Rougeole-RR</td><td>2</td><td>Routine</td><td><span class="pill pill-green">Publié</span></td></tr>
+              <tr><td>9–14 ans</td><td>VPH</td><td>1–2</td><td>Campagne / rattrapage</td><td><span class="pill pill-green">Publié</span></td></tr>
+            </tbody>
+          </table>
+          <p style="font-size:11px;color:var(--muted);margin-top:10px">Source : Programme national élargi de vaccination (PnEV) · validé par Dr. E. Dossou le 01/09/2026 · date d'effet 01/10/2026</p>
+        </div>
+        <div class="grid g2">
+          <div class="card">
+            <h3>Versions en cours de validation</h3>
+            <table>
+              <thead><tr><th>Référentiel</th><th>Version</th><th>Statut</th><th>Action</th></tr></thead>
+              <tbody>
+                <tr><td>Calendrier routine</td><td>v2027.1</td><td><span class="pill pill-orange">Soumis</span></td><td><button class="btn btn-navy btn-sm">Examiner</button></td></tr>
+                <tr><td>Règles campagne fièvre jaune</td><td>v1.2</td><td><span class="pill pill-blue">Brouillon</span></td><td><button class="btn btn-ghost btn-sm">Modifier</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card">
+            <h3>Cycle de vie</h3>
+            <div style="font-size:12px;line-height:2.2">
+              <span class="pill pill-grey">Brouillon</span> → <span class="pill pill-orange">Soumis</span> → <span class="pill pill-blue">Approuvé</span> → <span class="pill pill-green">Publié</span> → <span class="pill pill-grey">Retiré</span><br><br>
+              <span style="color:var(--muted);font-size:11px">Aucune règle médicale n'est modifiable sans validation d'une autorité compétente. Les versions publiées ne sont jamais écrasées — les actes historiques conservent la version utilisée.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- INCIDENT FROID DETAILLE -->
+      <div class="screen" id="scr-incident">
+        <h1 class="page-title">Incident chaîne du froid — Frigo F-014</h1>
+        <p class="page-sub">Ouvert le 23/11/2026 09:14 · CS Adidogomé · responsable : A. Mensah</p>
+        <div class="split">
+          <div class="card">
+            <h3>Chronologie</h3>
+            <div class="timeline">
+              <div class="t-item"><div class="t-date">09:14</div><div class="t-label">Alerte automatique</div><div class="t-detail">Relevé +11,2 °C (seuil max +8 °C)</div></div>
+              <div class="t-item"><div class="t-date">09:20</div><div class="t-label">Notification responsable</div><div class="t-detail">SMS + push à A. Mensah</div></div>
+              <div class="t-item"><div class="t-date">09:45</div><div class="t-label">Mesures conservatoires</div><div class="t-detail">Transfert des lots vers chambre froide B</div></div>
+              <div class="t-item"><div class="t-date">10:30</div><div class="t-label">Réparation engagée</div><div class="t-detail">Technicien notifié — thermostat</div></div>
+              <div class="t-item"><div class="t-date">11:14</div><div class="t-label">Relevé en cours</div><div class="t-detail">+9,8 °C — retour progressif vers la plage</div></div>
+              <div class="t-item"><div class="t-date">—</div><div class="t-label">Évaluation autorité</div><div class="t-detail">En attente — décision sur réutilisation des lots</div></div>
+            </div>
+          </div>
+          <div>
+            <div class="card" style="margin-bottom:16px">
+              <h3>Lots potentiellement concernés</h3>
+              <table>
+                <thead><tr><th>Lot</th><th>Produit</th><th>Qté</th><th>Décision</th></tr></thead>
+                <tbody>
+                  <tr><td>PCV-2026-A17</td><td>Penta</td><td>320</td><td><span class="pill pill-orange">Quarantaine</span></td></tr>
+                  <tr><td>MR-2026-B04</td><td>Rougeole-RR</td><td>180</td><td><span class="pill pill-orange">Quarantaine</span></td></tr>
+                </tbody>
+              </table>
+              <p style="font-size:11px;color:var(--muted);margin-top:8px">ImmuniQ ne décide pas de la réutilisation — décision de l'autorité compétente requise.</p>
+            </div>
+            <div class="card">
+              <h3>Décision de l'autorité</h3>
+              <textarea placeholder="Motif et décision (réutilisation / destruction)…" style="width:100%;height:70px;border:1px solid var(--border);border-radius:8px;padding:8px;font-family:inherit;font-size:12px"></textarea>
+              <button class="btn btn-navy" style="margin-top:8px;width:100%;justify-content:center">Enregistrer la décision</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RAPPORTS / EXPORTS -->
+      <div class="screen" id="scr-rapports">
+        <h1 class="page-title">Rapports &amp; exports</h1>
+        <p class="page-sub">Indicateurs agrégés ou anonymisés · tout export est tracé (auteur, périmètre, finalité)</p>
+        <div class="grid g3" style="margin-bottom:16px">
+          <div class="card"><h3>Couverture vaccinale</h3><div class="big">87,4 %</div><div class="delta" style="color:var(--muted)">Penta 3 — District Tsévié</div></div>
+          <div class="card"><h3>Taux d'abandon</h3><div class="big">4,2 %</div><div class="delta down">▼ 0,8 pt vs trimestre</div></div>
+          <div class="card"><h3>Délai moyen rappel</h3><div class="big">6,3 j</div><div class="delta" style="color:var(--muted)">objectif &lt; 7 j</div></div>
+        </div>
+        <table>
+          <thead><tr><th>Rapport</th><th>Type</th><th>Période</th><th>Format</th><th>Dernier export</th><th>Par</th><th></th></tr></thead>
+          <tbody>
+            <tr><td>Activité vaccinale par structure</td><td>Indicateur</td><td>Nov 2026</td><td>PDF / XLSX</td><td>22/11 14:02</td><td>Dr. E. Dossou</td><td><button class="btn btn-ghost btn-sm">Exporter</button></td></tr>
+            <tr><td>Bilan campagne rougeole</td><td>Campagne</td><td>Jan–Nov 2026</td><td>PDF</td><td>—</td><td>—</td><td><button class="btn btn-ghost btn-sm">Générer</button></td></tr>
+            <tr><td>État des stocks &amp; péremptions</td><td>Logistique</td><td>Semaine 47</td><td>XLSX</td><td>23/11 08:15</td><td>A. Mensah</td><td><button class="btn btn-ghost btn-sm">Exporter</button></td></tr>
+            <tr><td>Incidents chaîne du froid</td><td>Logistique</td><td>Nov 2026</td><td>PDF</td><td>23/11 11:20</td><td>Dr. E. Dossou</td><td><button class="btn btn-ghost btn-sm">Exporter</button></td></tr>
+          </tbody>
+        </table>
+        <div class="card" style="margin-top:16px">
+          <h3>Filtres disponibles</h3>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--muted)">
+            <span class="pill pill-blue">Période</span><span class="pill pill-blue">Région</span><span class="pill pill-blue">District</span><span class="pill pill-blue">Structure</span><span class="pill pill-blue">Campagne</span><span class="pill pill-blue">Tranche d'âge</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- NOTIFICATIONS -->
+      <div class="screen" id="scr-notifications">
+        <h1 class="page-title">Notifications &amp; rappels</h1>
+        <p class="page-sub">Rappels vaccinaux · alertes professionnelles · préférences et consentements</p>
+        <div class="grid g2">
+          <div class="card">
+            <h3>Envois récents</h3>
+            <table>
+              <thead><tr><th>Type</th><th>Canal</th><th>Destinataires</th><th>Statut</th><th>Date</th></tr></thead>
+              <tbody>
+                <tr><td>Rappel VAA 2</td><td>SMS</td><td>214</td><td><span class="pill pill-green">Délivrés 96 %</span></td><td>23/11 10:31</td></tr>
+                <tr><td>Alerte froid</td><td>Push + SMS</td><td>3 responsables</td><td><span class="pill pill-green">Accusés</span></td><td>23/11 09:15</td></tr>
+                <tr><td>Rappel Penta 3</td><td>Portail</td><td>89</td><td><span class="pill pill-blue">En attente lecture</span></td><td>23/11 08:00</td></tr>
+                <tr><td>Relance stock faible</td><td>Email</td><td>2 gestionnaires</td><td><span class="pill pill-orange">1 échec</span></td><td>22/11 17:00</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card">
+            <h3>Préférences types</h3>
+            <table>
+              <thead><tr><th>Message</th><th>Canal principal</th><th>Secours</th><th>Fréquence max</th></tr></thead>
+              <tbody>
+                <tr><td>Rappel vaccinal</td><td>SMS</td><td>Appel</td><td>1/semaine</td></tr>
+                <tr><td>Alerte professionnelle</td><td>Push</td><td>SMS</td><td>Immédiat</td></tr>
+                <tr><td>Information campagne</td><td>Portail</td><td>SMS</td><td>2/mois</td></tr>
+              </tbody>
+            </table>
+            <p style="font-size:11px;color:var(--muted);margin-top:10px">Les messages ne contiennent jamais de données de santé — uniquement des rappels génériques. Les messages essentiels de santé publique restent envoyés même si les préférences facultatives sont désactivées.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ============ MOBILE ============ -->
+<div class="screen" id="scr-mobile">
+  <div style="background:var(--navy);padding:40px 20px;text-align:center;color:#fff">
+    <h2 style="margin-bottom:6px">Interface mobile — ImmuniQ</h2>
+    <p style="color:#9FC3E8;font-size:12px">React Native · mode hors ligne · SQLite local chiffré</p>
+  </div>
+  <div style="background:var(--mist-light);padding:40px 20px;display:flex;justify-content:center">
+    <div class="phone">
+      <div class="status"><span>09:41</span><span>▲ ● ■</span></div>
+      <div class="m-body">
+        <div class="m-header">
+          <div class="avatar">KA</div>
+          <div><b>Koffi Agbeko</b><span>Vaccinateur · Équipe A3</span></div>
+        </div>
+        <div class="m-content">
+          <div class="m-card">
+            <h4>Prochain bénéficiaire</h4>
+            <div class="m-field"><span>Akossiwa Tété</span><span style="color:var(--muted)">IMQ-9T1R7M</span></div>
+            <div class="m-field"><span>Âge</span><span>14 mois</span></div>
+            <div class="m-field"><span>Échéance</span><span style="color:var(--danger);font-weight:600">VAA 2 — en retard</span></div>
+            <button class="m-btn">Ouvrir le dossier</button>
+          </div>
+          <div class="m-card">
+            <h4>Enregistrer une vaccination</h4>
+            <div class="m-field"><span>Vaccin</span><span>Penta (DTC-HepB-Hib)</span></div>
+            <div class="m-field"><span>Dose</span><span>3</span></div>
+            <div class="m-field"><span>Lot</span><span>PCV-2026-A17 ▾</span></div>
+            <div class="m-field"><span>Date/heure</span><span>23/11/2026 10:52</span></div>
+            <div class="m-field"><span>Campagne</span><span>— Aucune — ▾</span></div>
+            <button class="m-btn">Valider l'acte</button>
+            <button class="m-btn ghost">Acte non réalisé…</button>
+          </div>
+          <div class="m-card">
+            <h4>Relevé de température</h4>
+            <div class="m-field"><span>Équipement</span><span>Cold box CB-07</span></div>
+            <div class="m-field"><span>Valeur</span><span>+4,6 °C</span></div>
+            <button class="m-btn">Enregistrer</button>
+          </div>
+        </div>
+        <div class="sync-bar">⚡ Mode hors ligne — 3 opérations en attente de synchronisation</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PORTAIL ============ -->
+<div class="screen" id="scr-portail">
+  <header class="portal-header"><div class="inner">
+    <div style="display:flex;align-items:center;gap:10px"><div class="logo" style="width:36px;height:36px;border-radius:8px;background:var(--teal);display:flex;align-items:center;justify-content:center;font-weight:700">IQ</div><b style="font-size:16px">ImmuniQ</b></div>
+    <nav><a href="#">Accueil</a><a href="#">Mon dossier</a><a href="#">Échéances</a><a href="#">Rappels</a><a href="#">Aide</a></nav>
+  </div></header>
+  <div class="portal-hero">
+    <h1>Votre santé vaccinale,<br>simple et sécurisée</h1>
+    <p>Consultez le dossier vaccinal de votre famille, suivez les échéances et recevez des rappels au bon moment.</p>
+    <button class="btn btn-primary" style="padding:12px 28px;font-size:13px">Accéder à mon espace</button>
+  </div>
+  <div class="portal-body">
+    <h2 style="color:var(--navy);font-size:18px;margin-bottom:16px">Espace bénéficiaire — Aperçu</h2>
+    <div class="vax-card"><div class="vax-dot" style="background:var(--success)"></div><div style="flex:1"><b>BCG</b> — administrée le 28/03/2026<br><span style="font-size:11px;color:var(--muted)">CS Adidogomé · vérifiée</span></div><span class="pill pill-green">Fait</span></div>
+    <div class="vax-card"><div class="vax-dot" style="background:var(--success)"></div><div style="flex:1"><b>Penta 3</b> — administrée le 02/10/2026<br><span style="font-size:11px;color:var(--muted)">CS Adidogomé · vérifiée</span></div><span class="pill pill-green">Fait</span></div>
+    <div class="vax-card" style="border-color:#F0D9A8;background:#FFFDF5"><div class="vax-dot" style="background:var(--warning)"></div><div style="flex:1"><b>Rougeole 1</b> — recommandée le <b>12/01/2027</b><br><span style="font-size:11px;color:var(--muted)">Rappel programmé par SMS</span></div><span class="pill pill-orange">À venir</span></div>
+    <div style="margin-top:24px;display:flex;gap:12px">
+      <button class="btn btn-navy">Télécharger mon carnet vaccinal (PDF)</button>
+      <button class="btn btn-ghost">Gérer mes rappels SMS</button>
+    </div>
+    <p style="margin-top:32px;font-size:11px;color:var(--muted);text-align:center">ImmuniQ — Ministère de la Santé · République Togolaise · Données protégées et confidentielles</p>
+  </div>
+</div>
+
+<!-- Sélecteur d'écrans -->
+<div class="demo-switch">
+  <b>Maquette ImmuniQ</b><br>
+  <select onchange="go(this.value)">
+    <option value="scr-login">Connexion</option>
+    <option value="scr-dashboard" selected>Web — Tableau de bord</option>
+    <option value="scr-referentiels">Web — Référentiels</option>
+    <option value="scr-beneficiaires">Web — Bénéficiaires</option>
+    <option value="scr-vaccination">Web — Dossier vaccinal</option>
+    <option value="scr-campagnes">Web — Campagnes</option>
+    <option value="scr-stocks">Web — Stocks</option>
+    <option value="scr-froid">Web — Chaîne du froid</option>
+    <option value="scr-incident">Web — Incident détail</option>
+    <option value="scr-rapports">Web — Rapports</option>
+    <option value="scr-notifications">Web — Notifications</option>
+    <option value="scr-utilisateurs">Web — Utilisateurs</option>
+    <option value="scr-audit">Web — Audit</option>
+    <option value="scr-mobile">Mobile — Vaccinateur</option>
+    <option value="scr-portail">Portail — Bénéficiaire</option>
+  </select>
+</div>
+
+<script>
+function go(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.demo-switch select')[0].value=id;
+}
+</script>
+</body>
+</html>
