@@ -13,6 +13,7 @@ import { ColdChainModule } from './modules/cold-chain/cold-chain.module';
 import { CampaignsModule } from './modules/campaigns/campaigns.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { ReportingModule } from './modules/reporting/reporting.module';
+import { AdminModule } from './modules/admin/admin.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { ReportingModule } from './modules/reporting/reporting.module';
     CampaignsModule,
     NotificationsModule,
     ReportingModule,
+    AdminModule,
   ],
 })
 export class AppModule {}
