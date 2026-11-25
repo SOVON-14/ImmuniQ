@@ -9,6 +9,7 @@ import Vaccination from './pages/Vaccination';
 import Referentials from './pages/Referentials';
 import Campaigns from './pages/Campaigns';
 import Stock from './pages/Stock';
+import ColdChain from './pages/ColdChain';
 import Placeholder from './pages/Placeholder';
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
@@ -42,7 +43,7 @@ export default function App() {
         <Route path="/referentiels" element={<Referentials />} />
         <Route path="/campagnes" element={<Campaigns />} />
         <Route path="/stocks" element={<Stock />} />
-        <Route path="/froid" element={<Placeholder title="Chaîne du froid" />} />
+        <Route path="/froid" element={<ColdChain />} />
         <Route path="/notifications" element={<Placeholder title="Notifications" />} />
         <Route path="/rapports" element={<Placeholder title="Rapports" />} />
         <Route path="/utilisateurs" element={<Placeholder title="Utilisateurs" />} />
