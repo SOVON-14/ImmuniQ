@@ -11,13 +11,18 @@ export interface Paginated<T> {
 
 export interface Beneficiary {
   id: string;
-  imqId?: string;
+  immuniqId?: string;
   firstName?: string;
   lastName?: string;
   birthDate?: string;
   sex?: string;
   phone?: string;
+  commune?: string;
+  address?: string;
   status?: string;
+  originStructureId?: string;
+  originStructure?: { id: string; name?: string };
+  potentialDuplicates?: { id: string; immuniqId?: string; firstName?: string; lastName?: string; birthDate?: string }[];
   [key: string]: unknown;
 }
 
@@ -45,6 +50,11 @@ export interface VaccinationAct {
   administeredAt?: string;
   beneficiaryId?: string;
   vaccineId?: string;
+  doseNumber?: number;
+  site?: string;
+  route?: string;
+  lotNumber?: string;
+  vaccine?: { id: string; name?: string; code?: string };
   [key: string]: unknown;
 }
 

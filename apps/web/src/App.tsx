@@ -2,6 +2,9 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import { useAuth } from './lib/auth';
 import Layout from './components/Layout';
 import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
+import Beneficiaries from './pages/Beneficiaries';
+import BeneficiaryDetail from './pages/BeneficiaryDetail';
 import Placeholder from './pages/Placeholder';
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
@@ -28,8 +31,9 @@ export default function App() {
           </RequireAuth>
         }
       >
-        <Route path="/" element={<Placeholder title="Tableau de bord" />} />
-        <Route path="/beneficiaires" element={<Placeholder title="Bénéficiaires" />} />
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/beneficiaires" element={<Beneficiaries />} />
+        <Route path="/beneficiaires/:id" element={<BeneficiaryDetail />} />
         <Route path="/vaccination" element={<Placeholder title="Vaccination" />} />
         <Route path="/referentiels" element={<Placeholder title="Référentiels" />} />
         <Route path="/campagnes" element={<Placeholder title="Campagnes" />} />
