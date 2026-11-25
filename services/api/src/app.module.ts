@@ -9,6 +9,7 @@ import { VaccinationActsModule } from './modules/vaccination-acts/vaccination-ac
 import { RecordModule } from './modules/record/record.module';
 import { SyncModule } from './modules/sync/sync.module';
 import { LogisticsModule } from './modules/logistics/logistics.module';
+import { ColdChainModule } from './modules/cold-chain/cold-chain.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { LogisticsModule } from './modules/logistics/logistics.module';
     RecordModule,
     SyncModule,
     LogisticsModule,
+    ColdChainModule,
   ],
 })
 export class AppModule {}
