@@ -7,6 +7,7 @@ import { BeneficiariesModule } from './modules/beneficiaries/beneficiaries.modul
 import { ReferentialsModule } from './modules/referentials/referentials.module';
 import { VaccinationActsModule } from './modules/vaccination-acts/vaccination-acts.module';
 import { RecordModule } from './modules/record/record.module';
+import { SyncModule } from './modules/sync/sync.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { RecordModule } from './modules/record/record.module';
     ReferentialsModule,
     VaccinationActsModule,
     RecordModule,
+    SyncModule,
   ],
 })
 export class AppModule {}
