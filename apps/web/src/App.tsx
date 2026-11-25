@@ -15,7 +15,6 @@ import Reports from './pages/Reports';
 import Users from './pages/Users';
 import Admin from './pages/Admin';
 import Audit from './pages/Audit';
-import Placeholder from './pages/Placeholder';
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
