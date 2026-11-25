@@ -14,7 +14,7 @@ import { User } from '../identity/entities/user.entity';
 import { RoleCode } from '../identity/entities/role.entity';
 import { ScopeService } from '../../common/scope/scope.service';
 
-interface OpResult {
+export interface OpResult {
   opId: string;
   status: SyncOpStatus | 'duplicate';
   entityId?: string;
