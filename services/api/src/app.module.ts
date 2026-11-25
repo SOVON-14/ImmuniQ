@@ -6,6 +6,7 @@ import { OrgModule } from './modules/org/org.module';
 import { BeneficiariesModule } from './modules/beneficiaries/beneficiaries.module';
 import { ReferentialsModule } from './modules/referentials/referentials.module';
 import { VaccinationActsModule } from './modules/vaccination-acts/vaccination-acts.module';
+import { RecordModule } from './modules/record/record.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { VaccinationActsModule } from './modules/vaccination-acts/vaccination-ac
     BeneficiariesModule,
     ReferentialsModule,
     VaccinationActsModule,
+    RecordModule,
   ],
 })
 export class AppModule {}
