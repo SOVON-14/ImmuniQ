@@ -11,6 +11,7 @@ import Campaigns from './pages/Campaigns';
 import Stock from './pages/Stock';
 import ColdChain from './pages/ColdChain';
 import Notifications from './pages/Notifications';
+import Reports from './pages/Reports';
 import Placeholder from './pages/Placeholder';
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
@@ -46,7 +47,7 @@ export default function App() {
         <Route path="/stocks" element={<Stock />} />
         <Route path="/froid" element={<ColdChain />} />
         <Route path="/notifications" element={<Notifications />} />
-        <Route path="/rapports" element={<Placeholder title="Rapports" />} />
+        <Route path="/rapports" element={<Reports />} />
         <Route path="/utilisateurs" element={<Placeholder title="Utilisateurs" />} />
         <Route path="/admin" element={<Placeholder title="Administration" />} />
         <Route path="/audit" element={<Placeholder title="Journal d'audit" />} />
