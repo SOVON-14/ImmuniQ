@@ -15,6 +15,7 @@ import Reports from './pages/Reports';
 import Users from './pages/Users';
 import Admin from './pages/Admin';
 import Audit from './pages/Audit';
+import NotFound from './pages/NotFound';
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -54,7 +55,7 @@ export default function App() {
         <Route path="/admin" element={<Admin />} />
         <Route path="/audit" element={<Audit />} />
       </Route>
-      <Route path="*" element={<Navigate to="/" replace />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 }
