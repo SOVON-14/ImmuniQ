@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { useAuth } from './lib/auth';
 import Layout from './components/Layout';
+import ErrorBoundary from './components/ErrorBoundary';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Beneficiaries from './pages/Beneficiaries';
@@ -15,7 +16,7 @@ import Reports from './pages/Reports';
 import Users from './pages/Users';
 import Admin from './pages/Admin';
 import Audit from './pages/Audit';
-import NotFound from './pages/NotFound';
+import { ForbiddenPage, NotFoundPage, OfflinePage, ServerErrorPage } from './pages/ErrorPages';
 
 function RequireAuth({ children }: { children: React.ReactNode }) {
   const { user, loading } = useAuth();
@@ -32,30 +33,35 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route
-        element={
-          <RequireAuth>
-            <Layout />
-          </RequireAuth>
-        }
-      >
-        <Route path="/" element={<Dashboard />} />
-        <Route path="/beneficiaires" element={<Beneficiaries />} />
-        <Route path="/beneficiaires/:id" element={<BeneficiaryDetail />} />
-        <Route path="/vaccination" element={<Vaccination />} />
-        <Route path="/referentiels" element={<Referentials />} />
-        <Route path="/campagnes" element={<Campaigns />} />
-        <Route path="/stocks" element={<Stock />} />
-        <Route path="/froid" element={<ColdChain />} />
-        <Route path="/notifications" element={<Notifications />} />
-        <Route path="/rapports" element={<Reports />} />
-        <Route path="/utilisateurs" element={<Users />} />
-        <Route path="/admin" element={<Admin />} />
-        <Route path="/audit" element={<Audit />} />
-      </Route>
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <ErrorBoundary>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/403" element={<ForbiddenPage />} />
+        <Route path="/500" element={<ServerErrorPage />} />
+        <Route path="/offline" element={<OfflinePage />} />
+        <Route
+          element={
+            <RequireAuth>
+              <Layout />
+            </RequireAuth>
+          }
+        >
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/beneficiaires" element={<Beneficiaries />} />
+          <Route path="/beneficiaires/:id" element={<BeneficiaryDetail />} />
+          <Route path="/vaccination" element={<Vaccination />} />
+          <Route path="/referentiels" element={<Referentials />} />
+          <Route path="/campagnes" element={<Campaigns />} />
+          <Route path="/stocks" element={<Stock />} />
+          <Route path="/froid" element={<ColdChain />} />
+          <Route path="/notifications" element={<Notifications />} />
+          <Route path="/rapports" element={<Reports />} />
+          <Route path="/utilisateurs" element={<Users />} />
+          <Route path="/admin" element={<Admin />} />
+          <Route path="/audit" element={<Audit />} />
+        </Route>
+        <Route path="*" element={<NotFoundPage />} />
+      </Routes>
+    </ErrorBoundary>
   );
 }
