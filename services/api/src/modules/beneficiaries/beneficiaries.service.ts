@@ -203,7 +203,7 @@ export class BeneficiariesService {
     const tids = await this.scope.territoryIdsFor(actor.id);
     if (sids.length === 0 && tids.length === 0) {
       // Aucun rattachement : on limite à ce que l'utilisateur a créé ou qui lui est rattaché via actes (futur).
-      return qb.andWhere(`${alias}.created_by = :uid OR ${alias}.id IN (SELECT beneficiary_id FROM vaccination_acts WHERE professional_id = :uid)`, { uid: actor.id });
+      return qb.andWhere(`${alias}.created_by = :uid OR ${alias}.id IN (SELECT beneficiary_id FROM vaccination_acts WHERE vaccinator_id = :uid)`, { uid: actor.id });
     }
     return qb.andWhere(
       `(${alias}.origin_structure_id IN (:...sids) OR ${alias}.origin_structure.territory_id IN (:...tids))`,

@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Ip, Post, Req, UseGuards } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { Request } from 'express';
 import { AuthService } from './auth.service';
 import { LoginDto, RefreshDto } from './dto/auth.dto';
@@ -10,11 +11,13 @@ import { User } from './entities/user.entity';
 export class AuthController {
   constructor(private auth: AuthService) {}
 
+  @Throttle({ default: { limit: 5, ttl: 60_000 } }) // anti brute-force : 5 tentatives/min/IP
   @Post('login')
   login(@Body() dto: LoginDto, @Ip() ip: string, @Req() req: Request) {
     return this.auth.login(dto, ip, req.headers['user-agent']);
   }
 
+  @Throttle({ default: { limit: 10, ttl: 60_000 } })
   @Post('refresh')
   refresh(@Body() dto: RefreshDto, @Ip() ip: string, @Req() req: Request) {
     return this.auth.refresh(dto.refreshToken, ip, req.headers['user-agent']);

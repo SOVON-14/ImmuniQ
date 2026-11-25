@@ -2,7 +2,7 @@ import {
   BadRequestException, ForbiddenException, Injectable, NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { VaccinationAct, ActStatus, ActSource } from './entities/vaccination-act.entity';
 import { ActCorrection } from './entities/act-correction.entity';
 import { AdverseEvent } from './entities/adverse-event.entity';
@@ -37,6 +37,7 @@ export class VaccinationActsService {
     @InjectRepository(VaccinationRule) private rules: Repository<VaccinationRule>,
     private audit: AuditService,
     private scope: ScopeService,
+    private dataSource: DataSource,
   ) {}
 
   // ---------- Actes ----------
@@ -168,29 +169,33 @@ export class VaccinationActsService {
     }
     if (changes.length === 0) return act;
 
-    if (act.status === ActStatus.ADMINISTERED) {
-      if (!reason) throw new BadRequestException('Un motif est obligatoire pour corriger un acte administré');
-      for (const c of changes) {
-        await this.corrections.save(this.corrections.create({
-          actId: id, actorId: actor.id, field: c.field,
-          oldValue: c.oldValue == null ? null : String(c.oldValue),
-          newValue: c.newValue == null ? null : String(c.newValue),
-          reason,
-        } as ActCorrection));
+    // Transaction : corrections + mise à jour de l'acte — tout ou rien
+    const saved = await this.dataSource.transaction(async (em) => {
+      if (act.status === ActStatus.ADMINISTERED) {
+        if (!reason) throw new BadRequestException('Un motif est obligatoire pour corriger un acte administré');
+        const corrRepo = em.getRepository(ActCorrection);
+        for (const c of changes) {
+          await corrRepo.save(corrRepo.create({
+            actId: id, actorId: actor.id, field: c.field,
+            oldValue: c.oldValue == null ? null : String(c.oldValue),
+            newValue: c.newValue == null ? null : String(c.newValue),
+            reason,
+          } as ActCorrection));
+        }
       }
-    }
 
-    Object.assign(act, {
-      administeredAt: dto.administeredAt ? new Date(dto.administeredAt) : act.administeredAt,
-      structureId: dto.structureId ?? act.structureId,
-      presentationId: dto.presentationId ?? act.presentationId,
-      lotId: dto.lotId ?? act.lotId,
-      lotNumber: dto.lotNumber ?? act.lotNumber,
-      site: dto.site ?? act.site,
-      route: dto.route ?? act.route,
-      notes: dto.notes ?? act.notes,
+      Object.assign(act, {
+        administeredAt: dto.administeredAt ? new Date(dto.administeredAt) : act.administeredAt,
+        structureId: dto.structureId ?? act.structureId,
+        presentationId: dto.presentationId ?? act.presentationId,
+        lotId: dto.lotId ?? act.lotId,
+        lotNumber: dto.lotNumber ?? act.lotNumber,
+        site: dto.site ?? act.site,
+        route: dto.route ?? act.route,
+        notes: dto.notes ?? act.notes,
+      });
+      return em.getRepository(VaccinationAct).save(act);
     });
-    const saved = await this.acts.save(act);
     await this.audit.log({
       actorId: actor.id, action: act.status === ActStatus.ADMINISTERED ? 'act.correct' : 'act.update',
       resourceType: 'vaccination_act', resourceId: id, ip, userAgent: ua,
@@ -270,7 +275,20 @@ export class VaccinationActsService {
       .leftJoinAndSelect('e.beneficiary', 'b')
       .leftJoinAndSelect('e.declarant', 'u')
       .orderBy('e.created_at', 'DESC').take(200);
-    await this.applyScope(actor, qb, 'e');
+    // adverse_events n'a pas de structure_id propre : on filtre via le périmètre
+    // du bénéficiaire (structure/territoire d'origine) ou le déclarant.
+    if (![RoleCode.NATIONAL_ADMIN, RoleCode.HEALTH_AUTHORITY].includes(actor.role?.code as RoleCode)) {
+      const sids = await this.scope.structureIdsFor(actor.id);
+      const tids = await this.scope.territoryIdsFor(actor.id);
+      const empty = '00000000-0000-0000-0000-000000000000';
+      qb.andWhere(
+        `(e.declared_by = :uid OR e.beneficiary_id IN (
+          SELECT bb.id FROM beneficiaries bb
+          LEFT JOIN structures st ON bb.origin_structure_id = st.id
+          WHERE bb.origin_structure_id IN (:...sids) OR st.territory_id IN (:...tids)))`,
+        { uid: actor.id, sids: sids.length ? sids : [empty], tids: tids.length ? tids : [empty] },
+      );
+    }
     return qb.getMany();
   }
 

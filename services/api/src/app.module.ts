@@ -1,6 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 import { IdentityModule } from './modules/identity/identity.module';
 import { OrgModule } from './modules/org/org.module';
 import { BeneficiariesModule } from './modules/beneficiaries/beneficiaries.module';
@@ -18,6 +20,9 @@ import { AdminModule } from './modules/admin/admin.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    // Rate limiting global : 300 req/min par IP par défaut ; /auth/login et /auth/refresh
+    // ont une limite renforcée via @Throttle (5 req/min).
+    ThrottlerModule.forRoot([{ ttl: 60_000, limit: 300 }]),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST ?? 'localhost',
@@ -27,6 +32,10 @@ import { AdminModule } from './modules/admin/admin.module';
       database: process.env.DB_NAME ?? 'immuniq',
       autoLoadEntities: true,
       synchronize: process.env.NODE_ENV !== 'production',
+      // Migrations : générées via `pnpm migration:generate` quand une BDD de dev est dispo.
+      // En production : synchronize=false + migrationsRun piloté au déploiement.
+      migrations: [__dirname + '/migrations/*{.ts,.js}'],
+      migrationsTableName: 'typeorm_migrations',
       logging: process.env.DB_LOGGING === 'true',
     }),
     IdentityModule,
@@ -43,5 +52,6 @@ import { AdminModule } from './modules/admin/admin.module';
     ReportingModule,
     AdminModule,
   ],
+  providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
 export class AppModule {}

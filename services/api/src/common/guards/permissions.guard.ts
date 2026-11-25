@@ -25,7 +25,7 @@ export class PermissionsGuard implements CanActivate {
     const codes = new Set(user.role.permissions.map((p) => `${p.resource}.${p.action}`));
     // Wildcards : "ressource.*" couvre toutes les actions ; "*" couvre tout.
     const ok = required.some((code) => {
-      if (codes.has(code) || codes.has('*')) return true;
+      if (codes.has(code) || codes.has('*') || codes.has('*.*')) return true;
       const [resource] = code.split('.');
       return codes.has(`${resource}.*`);
     });

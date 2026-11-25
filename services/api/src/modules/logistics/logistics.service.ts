@@ -2,7 +2,7 @@ import {
   BadRequestException, ForbiddenException, Injectable, NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, EntityManager, Repository } from 'typeorm';
 import { Product } from './entities/product.entity';
 import { Lot, LotStatus } from './entities/lot.entity';
 import { StockLevel } from './entities/stock-level.entity';
@@ -36,6 +36,7 @@ export class LogisticsService {
     @InjectRepository(InventoryLine) private invLines: Repository<InventoryLine>,
     private audit: AuditService,
     private scope: ScopeService,
+    private dataSource: DataSource,
   ) {}
 
   // ---------- Produits ----------
@@ -67,26 +68,29 @@ export class LogisticsService {
     const receipt = dto.receiptDate ? new Date(dto.receiptDate) : new Date();
     if (expiry <= receipt) throw new BadRequestException('Date d’expiration invalide');
 
-    const lot = await this.lots.save(this.lots.create({
-      productId: dto.productId,
-      lotNumber: dto.lotNumber,
-      expiryDate: expiry,
-      receiptDate: receipt,
-      quantityInitial: dto.quantityInitial,
-      manufacturer: dto.manufacturer,
-      supplier: dto.supplier,
-      structureId: dto.structureId,
-      status: dto.status ?? LotStatus.AVAILABLE,
-      notes: dto.notes,
-    }));
-
-    await this.upsertLevel(lot.id, dto.structureId, dto.quantityInitial);
-    await this.movements.save(this.movements.create({
-      lotId: lot.id, productId: dto.productId,
-      toStructureId: dto.structureId, quantity: dto.quantityInitial,
-      type: MovementType.RECEIPT, reason: `Réception lot ${dto.lotNumber} (${dto.supplier ?? 'fournisseur non précisé'})`,
-      actorId: actor.id,
-    }));
+    // Transaction : lot + niveau + mouvement réception — tout ou rien
+    const lot = await this.dataSource.transaction(async (em) => {
+      const savedLot = await em.getRepository(Lot).save(em.getRepository(Lot).create({
+        productId: dto.productId,
+        lotNumber: dto.lotNumber,
+        expiryDate: expiry,
+        receiptDate: receipt,
+        quantityInitial: dto.quantityInitial,
+        manufacturer: dto.manufacturer,
+        supplier: dto.supplier,
+        structureId: dto.structureId,
+        status: dto.status ?? LotStatus.AVAILABLE,
+        notes: dto.notes,
+      }));
+      await this.upsertLevelTx(em, savedLot.id, dto.structureId, dto.quantityInitial);
+      await em.getRepository(StockMovement).save(em.getRepository(StockMovement).create({
+        lotId: savedLot.id, productId: dto.productId,
+        toStructureId: dto.structureId, quantity: dto.quantityInitial,
+        type: MovementType.RECEIPT, reason: `Réception lot ${dto.lotNumber} (${dto.supplier ?? 'fournisseur non précisé'})`,
+        actorId: actor.id,
+      }));
+      return savedLot;
+    });
     await this.audit.log({
       actorId: actor.id, action: 'stock.receive', resourceType: 'lot', resourceId: lot.id,
       ip, userAgent: ua, details: { lotNumber: dto.lotNumber, quantity: dto.quantityInitial, structureId: dto.structureId },
@@ -130,14 +134,17 @@ export class LogisticsService {
       throw new BadRequestException(`Stock insuffisant (disponible : ${from?.quantityOnHand ?? 0})`);
     }
 
-    await this.applyLevelDelta(dto.lotId, dto.fromStructureId, -dto.quantity);
-    await this.upsertLevel(dto.lotId, dto.toStructureId, dto.quantity);
-
-    const base = { lotId: lot.id, productId: lot.productId, reason: dto.reason, actorId: actor.id };
-    await this.movements.save([
-      this.movements.create({ ...base, fromStructureId: dto.fromStructureId, quantity: -dto.quantity, type: MovementType.TRANSFER_OUT }),
-      this.movements.create({ ...base, toStructureId: dto.toStructureId, quantity: dto.quantity, type: MovementType.TRANSFER_IN }),
-    ]);
+    // Transaction : débit source + crédit destination + 2 mouvements
+    await this.dataSource.transaction(async (em) => {
+      await this.applyLevelDeltaTx(em, dto.lotId, dto.fromStructureId, -dto.quantity);
+      await this.upsertLevelTx(em, dto.lotId, dto.toStructureId, dto.quantity);
+      const base = { lotId: lot.id, productId: lot.productId, reason: dto.reason, actorId: actor.id };
+      const mvRepo = em.getRepository(StockMovement);
+      await mvRepo.save([
+        mvRepo.create({ ...base, fromStructureId: dto.fromStructureId, quantity: -dto.quantity, type: MovementType.TRANSFER_OUT }),
+        mvRepo.create({ ...base, toStructureId: dto.toStructureId, quantity: dto.quantity, type: MovementType.TRANSFER_IN }),
+      ]);
+    });
     await this.audit.log({
       actorId: actor.id, action: 'stock.transfer', resourceType: 'lot', resourceId: lot.id,
       ip, userAgent: ua, details: { from: dto.fromStructureId, to: dto.toStructureId, quantity: dto.quantity, reason: dto.reason },
@@ -160,25 +167,28 @@ export class LogisticsService {
       if (available < dto.quantity) {
         throw new BadRequestException(`Stock insuffisant (disponible : ${available})`);
       }
-      await this.applyLevelDelta(dto.lotId, dto.structureId, delta);
     }
 
-    if (dto.type === MovementType.QUARANTINE) {
-      // La quarantaine porte sur le lot entier
-      lot.status = LotStatus.QUARANTINED;
-      await this.lots.save(lot);
-    } else if (dto.type === MovementType.RELEASE) {
-      if (lot.status !== LotStatus.QUARANTINED) throw new BadRequestException('Le lot n’est pas en quarantaine');
-      if (new Date(lot.expiryDate) <= new Date()) throw new BadRequestException('Lot expiré : libération impossible');
-      lot.status = LotStatus.AVAILABLE;
-      await this.lots.save(lot);
-    }
-
-    const movement = await this.movements.save(this.movements.create({
-      lotId: lot.id, productId: lot.productId,
-      fromStructureId: dto.structureId, quantity: delta,
-      type: dto.type, reason: dto.reason, actorId: actor.id,
-    }));
+    // Transaction : niveau + statut lot + mouvement
+    const movement = await this.dataSource.transaction(async (em) => {
+      if (!isInflux) {
+        await this.applyLevelDeltaTx(em, dto.lotId, dto.structureId, delta);
+      }
+      if (dto.type === MovementType.QUARANTINE) {
+        lot.status = LotStatus.QUARANTINED;
+        await em.getRepository(Lot).save(lot);
+      } else if (dto.type === MovementType.RELEASE) {
+        if (lot.status !== LotStatus.QUARANTINED) throw new BadRequestException('Le lot n’est pas en quarantaine');
+        if (new Date(lot.expiryDate) <= new Date()) throw new BadRequestException('Lot expiré : libération impossible');
+        lot.status = LotStatus.AVAILABLE;
+        await em.getRepository(Lot).save(lot);
+      }
+      return em.getRepository(StockMovement).save(em.getRepository(StockMovement).create({
+        lotId: lot.id, productId: lot.productId,
+        fromStructureId: dto.structureId, quantity: delta,
+        type: dto.type, reason: dto.reason, actorId: actor.id,
+      }));
+    });
     await this.audit.log({
       actorId: actor.id, action: `stock.${dto.type}`, resourceType: 'stock_movement', resourceId: movement.id,
       ip, userAgent: ua, details: { lotId: lot.id, structureId: dto.structureId, quantity: dto.quantity, reason: dto.reason },
@@ -198,13 +208,16 @@ export class LogisticsService {
     if (delta === 0) return { lotId: lot.id, structureId: dto.structureId, unchanged: true };
     if (current + delta < 0) throw new BadRequestException('Ajustement impossible : quantité négative');
 
-    await this.applyLevelDelta(dto.lotId, dto.structureId, delta);
-    const movement = await this.movements.save(this.movements.create({
-      lotId: lot.id, productId: lot.productId,
-      fromStructureId: dto.structureId, quantity: delta,
-      type: MovementType.ADJUSTMENT, reason: dto.reason,
-      referenceType: 'inventory', actorId: actor.id,
-    }));
+    // Transaction : niveau + mouvement d'ajustement
+    const movement = await this.dataSource.transaction(async (em) => {
+      await this.applyLevelDeltaTx(em, dto.lotId, dto.structureId, delta);
+      return em.getRepository(StockMovement).save(em.getRepository(StockMovement).create({
+        lotId: lot.id, productId: lot.productId,
+        fromStructureId: dto.structureId, quantity: delta,
+        type: MovementType.ADJUSTMENT, reason: dto.reason,
+        referenceType: 'inventory', actorId: actor.id,
+      }));
+    });
     await this.audit.log({
       actorId: actor.id, action: 'stock.adjust', resourceType: 'stock_movement', resourceId: movement.id,
       ip, userAgent: ua, details: { lotId: lot.id, structureId: dto.structureId, from: current, to: dto.newQuantity, reason: dto.reason },
@@ -316,24 +329,25 @@ export class LogisticsService {
     return this.levels.findOne({ where: { lotId, structureId } });
   }
 
-  private async upsertLevel(lotId: string, structureId: string, qty: number) {
-    let level = await this.getLevel(lotId, structureId);
-    if (!level) {
-      level = this.levels.create({ lotId, structureId, quantityOnHand: 0, updatedAt: new Date() });
-    }
+  // Variantes transactionnelles (EntityManager)
+  private async upsertLevelTx(em: EntityManager, lotId: string, structureId: string, qty: number) {
+    const repo = em.getRepository(StockLevel);
+    let level = await repo.findOne({ where: { lotId, structureId } });
+    if (!level) level = repo.create({ lotId, structureId, quantityOnHand: 0, updatedAt: new Date() });
     level.quantityOnHand += qty;
     level.updatedAt = new Date();
-    return this.levels.save(level);
+    return repo.save(level);
   }
 
-  private async applyLevelDelta(lotId: string, structureId: string, delta: number) {
-    const level = await this.getLevel(lotId, structureId);
+  private async applyLevelDeltaTx(em: EntityManager, lotId: string, structureId: string, delta: number) {
+    const repo = em.getRepository(StockLevel);
+    const level = await repo.findOne({ where: { lotId, structureId } });
     if (!level) throw new NotFoundException('Niveau de stock introuvable');
     const next = level.quantityOnHand + delta;
     if (next < 0) throw new BadRequestException('Stock insuffisant');
     level.quantityOnHand = next;
     level.updatedAt = new Date();
-    return this.levels.save(level);
+    return repo.save(level);
   }
 
   private async getLotForWrite(actor: User, lotId: string) {
