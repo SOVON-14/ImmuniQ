@@ -16,6 +16,7 @@ import { CampaignsModule } from './modules/campaigns/campaigns.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { ReportingModule } from './modules/reporting/reporting.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { PortalModule } from './modules/portal/portal.module';
 
 @Module({
   imports: [
@@ -51,6 +52,7 @@ import { AdminModule } from './modules/admin/admin.module';
     NotificationsModule,
     ReportingModule,
     AdminModule,
+    PortalModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
