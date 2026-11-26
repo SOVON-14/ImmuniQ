@@ -30,7 +30,7 @@ export default function LoginScreen({ onLogin }: { onLogin: (u: AuthUser) => voi
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView contentContainerStyle={styles.wrap} keyboardShouldPersistTaps="handled">
-        <Image source={require('../../assets/monogramme.png')} style={styles.logoImg} resizeMode="contain" />
+        <Image source={require('../../assets/logo.png')} style={styles.logoImg} resizeMode="contain" />
         <Text style={styles.title}>ImmuniQ</Text>
         <Text style={styles.subtitle}>Vaccinateur · Mode hors ligne</Text>
 
@@ -62,7 +62,7 @@ export default function LoginScreen({ onLogin }: { onLogin: (u: AuthUser) => voi
 
 const styles = StyleSheet.create({
   wrap: { flexGrow: 1, justifyContent: 'center', padding: spacing.xl, backgroundColor: colors.mistLight },
-  logoImg: { width: 140, height: 66, alignSelf: 'center', marginBottom: spacing.md },
+  logoImg: { width: 220, height: 124, alignSelf: 'center', marginBottom: spacing.md },
   title: { textAlign: 'center', fontSize: 28, fontWeight: '800', color: colors.navy, fontFamily: undefined as never },
   subtitle: { textAlign: 'center', color: colors.muted, fontSize: 13, marginBottom: spacing.xl, marginTop: 2 },
   card: { backgroundColor: colors.surface, borderRadius: 20, borderWidth: 1, borderColor: colors.border, padding: spacing.xl, marginBottom: spacing.lg },
