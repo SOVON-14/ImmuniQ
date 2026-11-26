@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import { restoreSession, AuthUser, logout as apiLogout } from './lib/api';
 import { kv, pendingOps } from './lib/db';
@@ -48,7 +48,7 @@ export default function App() {
   if (!ready) {
     return (
       <View style={{ flex: 1, backgroundColor: colors.navy, alignItems: 'center', justifyContent: 'center' }}>
-        <Text style={{ color: '#fff', fontSize: 18, fontWeight: '700' }}>ImmuniQ</Text>
+        <Image source={require('../assets/logo-inverse.png')} style={{ width: 200, height: 112 }} resizeMode="contain" />
       </View>
     );
   }
