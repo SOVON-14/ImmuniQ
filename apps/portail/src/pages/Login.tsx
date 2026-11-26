@@ -34,9 +34,7 @@ export default function Login() {
     <div className="min-h-[70vh] flex items-center justify-center px-4 py-12">
       <Card className="w-full max-w-md !p-8">
         <div className="text-center mb-6">
-          <div className="w-14 h-14 rounded-2xl bg-immuniq-teal mx-auto flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-immuniq-teal/30">
-            IQ
-          </div>
+          <img src="/img/monogramme.png" alt="ImmuniQ" className="h-14 w-auto mx-auto" />
           <h1 className="mt-4 text-2xl font-bold">Connexion</h1>
           <p className="text-sm text-muted mt-1">Espace bénéficiaire ImmuniQ</p>
         </div>

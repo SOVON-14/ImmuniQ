@@ -22,9 +22,7 @@ export default function PortalLayout() {
       <header className="bg-surface border-b border-line sticky top-0 z-20">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
           <Link to="/" className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-lg bg-immuniq-teal flex items-center justify-center text-white font-bold text-sm">
-              IQ
-            </div>
+            <img src="/img/monogramme.png" alt="ImmuniQ" className="h-9 w-auto" />
             <span className="font-heading font-bold text-immuniq-navy text-lg">ImmuniQ</span>
           </Link>
           <nav className="hidden md:flex items-center gap-1">
