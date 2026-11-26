@@ -91,9 +91,7 @@ export default function Layout() {
     <div className="min-h-screen flex">
       <aside className="w-60 bg-immuniq-navy text-white flex flex-col fixed inset-y-0 z-20">
         <div className="flex items-center gap-3 px-5 py-5">
-          <div className="w-9 h-9 rounded-lg bg-immuniq-teal flex items-center justify-center font-bold text-sm shadow-md shadow-teal-500/20">
-            IQ
-          </div>
+          <img src="/img/monogramme.png" alt="ImmuniQ" className="h-9 w-auto" />
           <div>
             <div className="text-base font-bold font-heading tracking-wide leading-tight">ImmuniQ</div>
             <div className="text-[10px] text-[#9FC3E8]">Santé · Togo</div>

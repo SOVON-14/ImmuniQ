@@ -25,14 +25,8 @@ function BrandPanel() {
         }}
       />
 
-      <div className="relative flex items-center gap-3">
-        <div className="w-11 h-11 rounded-xl bg-immuniq-teal flex items-center justify-center font-bold shadow-lg shadow-teal-500/30">
-          IQ
-        </div>
-        <div>
-          <div className="font-heading font-bold text-lg leading-tight">ImmuniQ</div>
-          <div className="text-[10px] text-[#9FC3E8] tracking-wide">SANTÉ · TOGO</div>
-        </div>
+      <div className="relative">
+        <img src="/img/logo-inverse.png" alt="ImmuniQ" className="h-14 w-auto mb-10" />
       </div>
 
       <div className="relative">
@@ -209,9 +203,7 @@ export default function Login() {
         <div className="w-full max-w-md">
           {/* Logo mobile */}
           <div className="flex lg:hidden items-center gap-3 mb-8 justify-center">
-            <div className="w-11 h-11 rounded-xl bg-immuniq-teal flex items-center justify-center font-bold text-white shadow-lg">
-              IQ
-            </div>
+            <img src="/img/monogramme.png" alt="ImmuniQ" className="h-11 w-auto" />
             <div className="font-heading font-bold text-xl text-immuniq-navy">ImmuniQ</div>
           </div>
 
